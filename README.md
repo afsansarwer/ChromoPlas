@@ -22,7 +22,7 @@ genomeflow genomes/ -o batch_results/ -t 8
 | Predicted plasmid screening | Gene/replicon matches in plasmid predictions | ABRicate |
 | Consolidated reporting | Quality TSV, hits TSV, summary TSV and HTML report | Snakemake/Python |
 
-**Input:** assembled nucleotide genome \`.fna\`, \`.fasta\`, \`.fa\`, optional \`.gz\`, either a single file or folder. **Not supported:** FASTQ read trimming, genome assembly, contamination/completeness estimates, phylogeny, or experimentally proving plasmid location.
+**Input:** assembled nucleotide genome `.fna`, `.fasta`, `.fa`, optional `.gz`, either a single file or folder. **Not supported:** FASTQ read trimming, genome assembly, contamination/completeness estimates, phylogeny, or experimentally proving plasmid location.
 
 ## Installation
 
@@ -76,4 +76,4 @@ results/
 - [Validation, limitations and reproducibility](docs/validation.md)
 - [Report problems or suggest features](https://github.com/afsansarwer/genomeflow/issues)
 
-The test suite can be run with \`python -m pytest -q\`; these are **unit tests**, not full cross-platform biological validation. **License:** MIT ([LICENSE](LICENSE)).
+The test suite can be run with `python -m pytest -q`; these are **unit tests**, not full cross-platform biological validation. **License:** MIT ([LICENSE](LICENSE)).
