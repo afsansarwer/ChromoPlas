@@ -58,6 +58,18 @@ The PowerShell launcher is an **experimental wrapper for the Linux installation*
 
 Supported input extensions: `.fna`, `.fasta`, `.fa`, with optional `.gz`. Avoid duplicate filenames and keep input FASTAs outside the output directory.
 
+### Updating GenomeFlow and databases
+
+From the repository's root folder in Linux/macOS/WSL2:
+
+```bash
+source "$HOME/miniforge3/etc/profile.d/conda.sh"
+conda activate base
+bash scripts/update-all.sh
+```
+
+The updater refreshes the compatible Conda environment, default ABRicate databases and MOB-suite references; optional Bakta databases require `--bakta-db PATH`. See [full update instructions](docs/updating.md), including snapshots and scientific reproducibility warnings.
+
 ### Advanced project workflow
 
 ```bash
