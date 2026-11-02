@@ -52,6 +52,10 @@ Rerun the **same command** with the same input and output directory. Snakemake u
 
 PowerShell is only a frontend to Ubuntu under WSL2. Use [Windows setup](install-windows-powershell.md) and confirm Miniforge exists at \`~/miniforge3\` **inside Ubuntu**. Windows-mounted NTFS drives can be slower or behave differently with symlinks; consider running inside the Linux filesystem.
 
+## Update tools and databases
+
+Use [the update-all guide](updating.md). Record versions before updates and avoid changing tools/databases halfway through a study.
+
 ## Report an issue
 
 [Open a GitHub issue](https://github.com/afsansarwer/genomeflow/issues) including OS and CPU architecture, exact command, relevant error and software/database versions. Never upload confidential biological data or personal identifying metadata.
