@@ -16,3 +16,5 @@ jobs:
       - run: python -m pip install -e '.[test]'
       - run: python -m pytest -q
       - run: python -m compileall -q src
+      - run: bash -n scripts/update-all.sh
+      - run: python -c "import yaml; d=yaml.safe_load(open('CITATION.cff')); assert d['cff-version']=='1.2.0' and d['authors']"
