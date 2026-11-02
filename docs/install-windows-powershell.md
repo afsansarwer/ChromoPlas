@@ -88,4 +88,6 @@ After a completed PowerShell run, open your selected Windows output directory an
 - "genomeflow missing": verify package installation and Conda environment **inside Ubuntu**, not Windows.
 - Database failures: see [Troubleshooting](troubleshooting.md).
 
+For updating all Linux tools and databases, open Ubuntu/WSL2 and follow [update instructions](updating.md).
+
 See also [command reference](../command_help.md) and [validation notes](validation.md).
