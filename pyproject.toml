@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genomeflow"
+version = "0.2.0"
+description = "Reproducible bacterial assembly QC, annotation, ARG/VF screening and plasmid analysis"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "GenomeFlow contributors"}]
+dependencies = ["typer>=0.12", "PyYAML>=6", "snakemake>=8,<10"]
+
+[project.optional-dependencies]
+test = ["pytest>=8"]
+
+[project.scripts]
+genomeflow = "genomeflow.cli:main"
+
+[tool.setuptools.package-data]
+genomeflow = ["workflow/*", "default_config.yaml"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

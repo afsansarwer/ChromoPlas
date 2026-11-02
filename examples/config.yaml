@@ -1,0 +1,12 @@
+project:
+  name: synthetic_example
+  output: example_results
+input:
+  genomes: genomes
+quality:
+  min_genome_size: 100
+  max_genome_size: 10000
+  max_contigs: 10
+  min_n50: 100
+  min_gc: 0
+  max_gc: 100

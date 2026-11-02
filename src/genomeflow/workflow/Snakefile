@@ -1,0 +1,137 @@
+import csv
+import json
+import shlex
+from pathlib import Path
+
+from genomeflow.qc import metrics, assess, write_tsv
+from genomeflow.report import build_report
+
+SAMPLES = json.loads(Path(config["_manifest"]).read_text())
+IDS = sorted(SAMPLES)
+DBS = config["abricate"]["databases"]
+THREADS = int(config["resources"].get("threads_per_job", 2))
+ANNOTATOR = config["annotation"]["tool"]
+PLASMIDS = bool(config["plasmids"].get("enabled", True))
+
+rule qc_sample:
+    input: lambda wc: SAMPLES[wc.sample]
+    output: "02_quality/per_sample/{sample}.tsv"
+    run:
+        m = metrics(input[0])
+        status, reasons = assess(m, config["quality"])
+        write_tsv(output[0], [dict(sample=wildcards.sample, input_fasta=input[0], **m, status=status, reasons=reasons)],
+                  ["sample", "input_fasta", "genome_size", "contigs", "n50", "gc", "status", "reasons"])
+
+checkpoint select_hq:
+    input: expand("02_quality/per_sample/{sample}.tsv", sample=IDS)
+    output: "02_quality/quality_summary.tsv", "00_metadata/hq_samples.txt"
+    run:
+        rows = []
+        for fp in input:
+            with open(fp) as fh:
+                rows.extend(csv.DictReader(fh, delimiter="\t"))
+        write_tsv(output[0], rows, ["sample", "input_fasta", "genome_size", "contigs", "n50", "gc", "status", "reasons"])
+        Path(output[1]).write_text("".join(r["sample"] + "\n" for r in rows if r["status"] == "PASS"))
+
+
+def selected(wc):
+    ck = checkpoints.select_hq.get()
+    return Path(ck.output[1]).read_text().splitlines()
+
+
+def final_targets(wc):
+    ids = selected(wc)
+    targets = expand("03_annotation/{sample}/.done", sample=ids)
+    targets += expand("04_abricate/{db}/{sample}.tsv", db=DBS, sample=ids)
+    if PLASMIDS:
+        targets += expand("05_plasmids/{sample}/.done", sample=ids)
+        targets += expand("06_plasmid_abricate/{db}/{sample}.tsv", db=DBS, sample=ids)
+    return targets
+
+rule all:
+    input: "07_reports/report.html"
+
+rule prepare_fasta:
+    input: lambda wc: SAMPLES[wc.sample]
+    output: "01_genomes/{sample}.fna"
+    run:
+        import gzip
+        import shutil
+        opener = gzip.open if str(input[0]).endswith(".gz") else open
+        Path(output[0]).parent.mkdir(parents=True, exist_ok=True)
+        with opener(input[0], "rb") as src, open(output[0], "wb") as dst:
+            shutil.copyfileobj(src, dst)
+
+rule annotate:
+    input: "01_genomes/{sample}.fna"
+    output: touch("03_annotation/{sample}/.done")
+    threads: THREADS
+    params:
+        tool=ANNOTATOR,
+        db=config["annotation"].get("bakta_db"),
+    run:
+        import subprocess
+        from pathlib import Path
+        folder = Path(f"03_annotation/{wildcards.sample}")
+        folder.mkdir(parents=True, exist_ok=True)
+        if params.tool == "prokka":
+            command = ["prokka", "--outdir", str(folder), "--prefix", wildcards.sample,
+                       "--cpus", str(threads), "--force", str(input[0])]
+        else:
+            command = ["bakta", "--output", str(folder), "--prefix", wildcards.sample,
+                       "--threads", str(threads), "--force"]
+            if params.db:
+                command += ["--db", str(params.db)]
+            command += [str(input[0])]
+        subprocess.run(command, check=True)
+
+rule screen_genome:
+    input: "01_genomes/{sample}.fna"
+    output: "04_abricate/{db}/{sample}.tsv"
+    wildcard_constraints: db="|".join(DBS)
+    params: minid=config["abricate"]["min_identity"], mincov=config["abricate"]["min_coverage"]
+    shell:
+        "mkdir -p $(dirname {output:q}); abricate --db {wildcards.db:q} --minid {params.minid} --mincov {params.mincov} {input:q} > {output:q}"
+
+rule reconstruct_plasmids:
+    input: "01_genomes/{sample}.fna"
+    output: touch("05_plasmids/{sample}/.done")
+    threads: THREADS
+    params: folder=lambda wc: f"05_plasmids/{wc.sample}"
+    shell:
+        "mkdir -p {params.folder:q}; mob_recon --infile {input:q} --outdir {params.folder:q} --num_threads {threads} --force"
+
+rule screen_plasmids:
+    input: done="05_plasmids/{sample}/.done"
+    output: "06_plasmid_abricate/{db}/{sample}.tsv"
+    params:
+        minid=config["plasmids"]["min_identity"],
+        mincov=config["plasmids"]["min_coverage"]
+    run:
+        import subprocess
+        from pathlib import Path
+        folder = Path(f"05_plasmids/{wildcards.sample}")
+        # MOB-recon can report no reconstructed plasmid sequences.
+        fastas = sorted(folder.glob("plasmid_*.fasta"))
+        Path(output[0]).parent.mkdir(parents=True, exist_ok=True)
+        with open(output[0], "w") as dest:
+            header_written = False
+            for fasta in fastas:
+                if fasta.stat().st_size == 0:
+                    continue
+                command = ["abricate", "--db", wildcards.db, "--minid", str(params.minid),
+                           "--mincov", str(params.mincov), str(fasta)]
+                response = subprocess.run(command, capture_output=True, text=True, check=True)
+                for line in response.stdout.splitlines():
+                    if line.startswith("#FILE"):
+                        if not header_written:
+                            dest.write(line + "\n")
+                            header_written = True
+                    elif line.strip():
+                        dest.write(line + "\n")
+
+rule generate_report:
+    input: final_targets
+    output: "07_reports/report.html"
+    run:
+        build_report(".", IDS, DBS)
