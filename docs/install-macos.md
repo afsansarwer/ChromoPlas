@@ -56,4 +56,4 @@ open "$HOME/genomeflow-results/07_reports/report.html"
 
 Replace the sample path with a real **assembled** genome. Try a single well-characterized isolate and validate its biological results before batch analysis.
 
-See [Troubleshooting](troubleshooting.md), [command reference](../command_help.md), [validation notes](validation.md), and [Miniforge](https://github.com/conda-forge/miniforge).
+See [update-all instructions](updating.md), [Troubleshooting](troubleshooting.md), [command reference](../command_help.md), [validation notes](validation.md), and [Miniforge](https://github.com/conda-forge/miniforge).
