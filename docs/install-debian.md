@@ -58,11 +58,6 @@ The bundled tiny synthetic FASTA is for CLI/QC checks, **not** a meaningful full
 
 ### Update later
 
-~~~bash
-cd genomeflow
-git pull --ff-only
-conda activate genomeflow
-python -m pip install --no-deps -e .
-~~~
+See [update-all instructions](updating.md). This refreshes tools and databases rather than just repository code.
 
 See [command reference](../command_help.md) and [validation limitations](validation.md).
