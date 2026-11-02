@@ -70,6 +70,9 @@ results/
 ## Documentation and community
 
 - [Installation overview](INSTALL.md)
+- [Updating all tools and databases](docs/updating.md)
+- [How to cite GenomeFlow and external tools](CITATION.md)
+- [Machine-readable software citation](CITATION.cff)
 - [Command reference](command_help.md)
 - [Debian/Ubuntu](docs/install-debian.md) · [macOS](docs/install-macos.md) · [Windows PowerShell + WSL2](docs/install-windows-powershell.md)
 - [Troubleshooting](docs/troubleshooting.md)
