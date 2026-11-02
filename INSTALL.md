@@ -1,73 +1,46 @@
-# GenomeFlow installation (Linux)
+# Installing GenomeFlow v0.2
 
-GenomeFlow v0.2 is a research prototype for assembled bacterial genomes.
+GenomeFlow processes **assembled bacterial FASTA files**, using external Snakemake, Prokka (or optionally Bakta), ABRicate and MOB-suite tools. **Research prototype:** Mac and Windows/WSL2 routes are experimental and not yet tested end to end.
 
-## Prerequisites
+Choose a platform-specific step-by-step guide:
 
-- Linux x86_64; Miniforge/Mamba recommended.
-- Internet access for MOB-suite reference database initialization.
-- At least 8 GB RAM for small tests; more for batch workloads.
-- Local assembled FASTA (`.fna`, `.fa`, `.fasta`, optionally gzip-compressed).
+- [Debian / Ubuntu](docs/install-debian.md) — recommended Linux route.
+- [macOS Intel / Apple Silicon](docs/install-macos.md) — experimental; native dependency resolution may vary.
+- [Windows PowerShell + Ubuntu/WSL2](docs/install-windows-powershell.md) — PowerShell calls Linux tools in WSL2; **not a native Windows port**.
 
-## Clone and install
+## Linux quick installation (Miniforge already installed)
 
 ```bash
-git clone https://github.com/OWNER/genomeflow.git
+git clone https://github.com/afsansarwer/genomeflow.git
 cd genomeflow
-eval "$(mamba shell hook --shell bash)"   # for Bash, current session
+source "$HOME/miniforge3/etc/profile.d/conda.sh"
 mamba create -y -n genomeflow -c conda-forge -c bioconda \
   python=3.11 snakemake prokka abricate mob_suite typer pyyaml pip pytest
-mamba activate genomeflow
+conda activate genomeflow
 python -m pip install --no-deps -e .
 genomeflow --help
-```
-
-Replace `OWNER` with the GitHub username once the repository is published.
-For Zsh use `eval "$(mamba shell hook --shell zsh)"`.
-
-## Prepare reference databases
-
-MOB-suite normally initializes its database during installation; first-time setup may download hundreds of MB.
-Verify the command works with `mob_recon --help`.
-Inspect ABRicate databases:
-
-```bash
 abricate --list
 ```
 
-If required databases are absent or stale, consult ABRicate documentation for `abricate-get_db --db NAME` and `abricate --setupdb`.
+If Miniforge is missing, install it using the selected OS-specific guide. The ABRicate databases `resfinder`, `vfdb` and `plasmidfinder` should be available; MOB-suite may need a first-time database download.
 
 ## One-command analysis
 
 ```bash
-genomeflow isolate.fna -o results/ -t 4
+genomeflow genome.fna -o results/ -t 4
 genomeflow genomes/ -o batch_results/ -t 8
 ```
 
-To preview, append `--dry-run`. A fresh output directory is recommended for each independent dataset.
-The first dry run can show only checkpoint-related jobs because Snakemake expands the downstream DAG after quality selection.
+These inputs must be assembled nucleotide FASTAs rather than raw FASTQ reads. Avoid placing source FASTAs inside the output folder. The bundled tiny synthetic example is for input/QC testing, **not complete biological validation**.
 
-## Advanced mode
+## For advanced users
 
 ```bash
 genomeflow init project
-cp isolate.fna project/genomes/
+cp genome.fna project/genomes/
 cd project
 genomeflow doctor --config config.yaml
 genomeflow run --config config.yaml --cores 4
 ```
 
-## Tests
-
-```bash
-python -m pytest -q
-python -m compileall -q src
-```
-
-## Notes and limitations
-
-- The QC filter uses FASTA assembly metrics; it does NOT estimate contamination or completeness.
-- Plasmid reconstruction is computational prediction, not experimental confirmation.
-- ABRicate calls depend on selected databases and thresholds.
-- Validate outputs against trusted reference genomes before publication.
-- Do not run `pip install -e .` in your Conda base environment; activate the target environment first.
+For more options see [command reference](command_help.md), [troubleshooting](docs/troubleshooting.md), and [validation limits](docs/validation.md). Keep your Conda `base` environment untouched.
