@@ -33,6 +33,10 @@ genomeflow genomes/ -o batch_results/ -t 8
 
 These inputs must be assembled nucleotide FASTAs rather than raw FASTQ reads. Avoid placing source FASTAs inside the output folder. The bundled tiny synthetic example is for input/QC testing, **not complete biological validation**.
 
+## Keeping GenomeFlow and its reference databases up to date
+
+Run `bash scripts/update-all.sh` from a clean Git clone in a Linux/macOS/WSL2 terminal, after initializing Miniforge. See [the full update guide](docs/updating.md) for snapshots, reference database refreshes, and reproducibility precautions. The update is **not** an automatic or transactional rollback.
+
 ## For advanced users
 
 ```bash
