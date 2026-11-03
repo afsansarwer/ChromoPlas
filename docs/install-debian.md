@@ -1,6 +1,6 @@
 # Debian / Ubuntu installation
 
-**Recommended Linux route (experimental on individual distributions).** ChromoPlas has completed an end-to-end run on Linux, but not every Debian or Ubuntu release has been validated. Use an x86_64 system, internet access, and enough storage for MOB-suite reference data.
+**Recommended Linux route (experimental on individual distributions).** GenomeFlow v0.1 previously completed a full Linux analysis, but the new ChromoPlas workflow has not yet completed an independent end-to-end run. Use an x86_64 system, internet access, and enough storage for MOB-suite reference data.
 
 ## 1. System prerequisites
 
@@ -39,7 +39,7 @@ The **--no-deps** option assumes all dependencies were installed by Mamba; do no
 ## 4. Check the setup
 
 ~~~bash
-which python chromoplas snakemake prokka abricate mob_recon
+which python chromoplas snakemake abricate mob_recon
 chromoplas --help
 abricate --list
 ~~~
