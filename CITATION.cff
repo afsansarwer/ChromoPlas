@@ -1,17 +1,17 @@
 cff-version: 1.2.0
-message: "If GenomeFlow contributes to your research, cite this software and the underlying tools/databases used in your analysis (see CITATION.md)."
+message: "Please cite ChromoPlas and the external tools and databases used in your study; see CITATION.md."
 type: software
-title: "GenomeFlow: a Snakemake workflow for bacterial genome annotation, antimicrobial resistance screening and plasmid analysis"
+title: "ChromoPlas: contig-resolved chromosome/plasmid localization of bacterial resistance, virulence and mobile-element determinants"
 authors:
   - family-names: Sarwer
     given-names: Afsan
-version: 0.2.0
+version: 0.3.0
 license: MIT
 repository-code: "https://github.com/afsansarwer/genomeflow"
 url: "https://github.com/afsansarwer/genomeflow"
 keywords:
-  - bioinformatics
   - bacterial genomics
   - antimicrobial resistance
-  - plasmid analysis
-  - Snakemake
+  - plasmids
+  - contig localization
+  - bioinformatics
