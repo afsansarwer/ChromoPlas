@@ -131,8 +131,8 @@ def read_mob_mges(sample, contigs, mob_dir):
         if identifier not in contigs:
             continue
         try:
-            start = int(row.get("mge_start", ""))
-            end = int(row.get("mge_end", ""))
+            start = int(row.get("contig_start", ""))
+            end = int(row.get("contig_end", ""))
         except ValueError:
             continue
         start, end = min(start, end), max(start, end)
@@ -145,7 +145,7 @@ def read_mob_mges(sample, contigs, mob_dir):
             "location": info["location"], "plasmid_group": info["plasmid_group"],
             "feature_class": "MGE",
             "feature_name": row.get("mge_id") or row.get("mge_type") or "MGE",
-            "start": start, "end": end, "strand": row.get("strand", ""),
+            "start": start, "end": end, "strand": row.get("sstrand", ""),
             "database": "mob-suite", "identity": "", "coverage": "",
             "evidence": "MOB-suite MGE hit", "assignment_note": info["assignment_note"],
         })
