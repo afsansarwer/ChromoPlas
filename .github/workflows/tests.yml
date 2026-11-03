@@ -21,6 +21,8 @@ jobs:
         run: python -m pytest -q
       - name: Smoke-test Snakemake planning for one FASTA
         run: chromoplas examples/genomes/test_isolate.fna -o /tmp/chromoplas-ci-results --dry-run
+      - name: Validate demo SVG files
+        run: python -c "import xml.etree.ElementTree as ET; [ET.parse(p) for p in ('examples/demo/architecture.svg', 'examples/demo/localization-summary.svg')]"
       - name: Compile package code
         run: python -m compileall -q src
       - name: Check shell scripts for syntax errors
