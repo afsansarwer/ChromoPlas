@@ -32,6 +32,7 @@ command -v python chromoplas snakemake abricate mob_recon
 chromoplas --help
 abricate --list
 chromoplas doctor
+# From your repository root: bash scripts/check-install.sh
 ~~~
 
 If the environment is active but chromoplas is missing, run from your **local repository root**:
