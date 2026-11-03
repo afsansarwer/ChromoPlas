@@ -1,5 +1,7 @@
 # Windows PowerShell installation (ChromoPlas via WSL2)
 
+See the [main installation checklist](../INSTALL.md) for the shared tool requirements and verification steps.
+
 ChromoPlas runs on Windows through **Ubuntu in WSL2**. Use the provided PowerShell wrapper to run the same Linux analysis pipeline from Windows.
 
 ## 1. Install WSL2 + Ubuntu
