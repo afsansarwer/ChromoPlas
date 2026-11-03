@@ -26,10 +26,10 @@ chromoplas run --config config.yaml --cores 4
 - 02_quality/quality_summary.tsv: genome QC with PASS/FAIL reasons
 - 04_abricate/: ResFinder ARGs, VFDB virulence hits, PlasmidFinder replicon hits
 - 05_plasmids/: MOB-suite contig report, reconstructed plasmid predictions, MGE report
-- 06_localization/SAMPLE/contig_summary.tsv: original contig IDs and predicted compartments
-- 06_localization/SAMPLE/feature_localization.tsv: feature coordinates on original FASTA contigs
-- 06_localization/SAMPLE/gene_localization_summary.tsv: chromosome, plasmid, both and unresolved categories
-- 06_localization/SAMPLE/architecture.svg: contig-level gene map
+- 07_localization/SAMPLE/contig_summary.tsv: original contig IDs and predicted compartments
+- 07_localization/SAMPLE/feature_localization.tsv: feature coordinates on original FASTA contigs
+- 07_localization/SAMPLE/gene_localization_summary.tsv: chromosome, plasmid, both and unresolved categories
+- 07_localization/SAMPLE/architecture.svg: contig-level gene map
 - 07_reports/report.html: isolate QC and visualization index
 
 The default workflow omits Prokka annotation to reduce runtime. Enable Prokka with annotation.enabled: true in a YAML config and install Prokka separately. For available options and configuration, see the linked guides.

@@ -67,7 +67,7 @@ def hq_samples(wc):
 
 def final_targets(wc):
     ids = hq_samples(wc)
-    paths = expand("06_localization/{sample}/.done", sample=ids)
+    paths = expand("07_localization/{sample}/.done", sample=ids)
     if ANNOTATE:
         paths += expand("03_annotation/{sample}/.done", sample=ids)
     return paths
@@ -144,10 +144,10 @@ rule localize_sample:
     input:
         localization_inputs
     output:
-        touch("06_localization/{sample}/.done")
+        touch("07_localization/{sample}/.done")
     run:
         sample = wildcards.sample
-        folder = Path(f"06_localization/{sample}")
+        folder = Path(f"07_localization/{sample}")
         folder.mkdir(parents=True, exist_ok=True)
         contigs, features, _ = localize(
             sample, f"01_genomes/{sample}.fna",
