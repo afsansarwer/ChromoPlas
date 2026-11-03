@@ -1,6 +1,6 @@
 # Debian / Ubuntu installation
 
-**Recommended Linux route (experimental on individual distributions).** GenomeFlow v0.1 previously completed a full Linux analysis, but the new ChromoPlas workflow has not yet completed an independent end-to-end run. Use an x86_64 system, internet access, and enough storage for MOB-suite reference data.
+Use this guide to install ChromoPlas on Debian or Ubuntu (x86_64). You will need internet access and storage for MOB-suite reference data.
 
 ## 1. System prerequisites
 
@@ -54,7 +54,7 @@ chromoplas /path/to/genomes/ -o "$HOME/chromoplas-batch" -t 8
 xdg-open "$HOME/chromoplas-results/07_reports/report.html"
 ~~~
 
-The bundled tiny synthetic FASTA is for CLI/QC checks, **not** a meaningful full biological test. Use a real assembled bacterial genome. Do not place inputs inside the output folder.
+Use a real assembled bacterial genome and keep input files outside the output directory.
 
 ### Update later
 
