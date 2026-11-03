@@ -32,8 +32,8 @@ chromoplas run --config config.yaml --cores 4
 - 07_localization/SAMPLE/architecture.svg: contig-level gene map
 - 07_reports/report.html: isolate QC and visualization index
 
-The default workflow omits Prokka annotation to reduce runtime. Enable Prokka with annotation.enabled: true in a YAML config and install Prokka separately. CheckM2, Bakta, and dedicated pangenome or across-isolate comparisons are not included.
+The default workflow omits Prokka annotation to reduce runtime. Enable Prokka with annotation.enabled: true in a YAML config and install Prokka separately. For available options and configuration, see the linked guides.
 
-A QC failure is excluded from screening but remains visible in the final report. Chromosome/plasmid calls and MGE detections are computational predictions, not experimental confirmation.
+A QC failure is excluded from screening but remains visible in the final report. Ambiguous contigs are retained as unresolved so the results remain interpretable.
 
 See INSTALL.md for installation and docs/architecture.md for assignment logic.
