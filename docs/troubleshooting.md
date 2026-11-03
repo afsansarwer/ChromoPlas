@@ -1,4 +1,4 @@
-# Troubleshooting GenomeFlow
+# Troubleshooting ChromoPlas
 
 ## Command not found or wrong Python
 
@@ -6,18 +6,18 @@ Activate your intended Conda environment before installing or running:
 
 ~~~bash
 source "$HOME/miniforge3/etc/profile.d/conda.sh"
-conda activate genomeflow
-which python genomeflow snakemake prokka abricate mob_recon
+conda activate chromoplas
+which python chromoplas snakemake prokka abricate mob_recon
 ~~~
 
-If \`genomeflow\` is missing, from the GitHub repository root run \`python -m pip install --no-deps -e .\`. This assumes dependencies were installed with Mamba.
+If \`chromoplas\` is missing, from the GitHub repository root run \`python -m pip install --no-deps -e .\`. This assumes dependencies were installed with Mamba.
 
 ## Missing \`typer\`, \`yaml\` or \`snakemake\`
 
-Verify \`which python\` points inside the **genomeflow** environment. Install Python dependencies into that environment:
+Verify \`which python\` points inside the **chromoplas** environment. Install Python dependencies into that environment:
 
 ~~~bash
-mamba install -n genomeflow -c conda-forge typer pyyaml snakemake
+mamba install -n chromoplas -c conda-forge typer pyyaml snakemake
 ~~~
 
 ## First dry-run has only 1–3 jobs
