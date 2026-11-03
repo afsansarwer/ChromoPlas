@@ -1,6 +1,6 @@
 # macOS installation (Intel and Apple Silicon)
 
-**Experimental:** No full ChromoPlas v0.3 run has yet been validated on macOS. The Python interface is portable, but Prokka, ABRicate, MOB-suite and their dependent packages may vary by architecture. Package resolution is not guaranteed, especially on Apple Silicon.
+**Experimental:** No full ChromoPlas v0.3 run has yet been validated on macOS. The Python interface is portable, but ABRicate, MOB-suite and their dependent packages may vary by architecture. Package resolution is not guaranteed, especially on Apple Silicon.
 
 ## 1. Identify your architecture
 
@@ -41,7 +41,7 @@ python -m pip install --no-deps -e .
 
 ~~~bash
 chromoplas --help
-which snakemake prokka abricate mob_recon
+which snakemake abricate mob_recon
 abricate --list
 ~~~
 
