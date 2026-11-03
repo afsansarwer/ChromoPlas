@@ -1,87 +1,95 @@
 # ChromoPlas
 
-**From assembled bacterial genomes to contig-level chromosome/plasmid localization of antimicrobial resistance genes, virulence factors, and mobile genetic elements.**
+### Map resistance and virulence determinants to bacterial chromosomes and plasmids
 
-ChromoPlas is an open-source, **lightweight bacterial genome analysis pipeline** built with Python and Snakemake. It independently screens each input genome, predicts which assembled contigs are chromosome-associated or plasmid-associated, joins gene calls to **original contig IDs and nucleotide coordinates**, and creates informative tables and an assembly-scale SVG figure.
+**ChromoPlas** is a lightweight, open-source bacterial genomics pipeline that turns assembled genomes into **contig-resolved gene localization maps**. It identifies antimicrobial resistance genes (ARGs), virulence factors (VFs), plasmid replicon markers, and available mobile genetic element (MGE) matches, then combines these findings with predicted chromosome/plasmid assignments.
 
-> **Release status: v0.3 development candidate.** ChromoPlas is not yet validated on clean installations or broad biological test sets. It is not a clinical diagnostic. The previous GenomeFlow v0.2 is replaced by a new Python package and CLI.
+Give ChromoPlas a single assembled genome or a folder of genomes. Each isolate receives its own analysis, figures, and searchable results.
 
-## Main workflow
+![Python tests](https://github.com/afsansarwer/genomeflow/actions/workflows/tests.yml/badge.svg)
 
-**Assembled FASTA** → **fast QC** → **ABRicate gene screening + MOB-suite contig classification** → **coordinate-level localization** → **SVG architecture map + per-isolate HTML/TSV report**
+## At a glance
 
-What it does:
+| Step | Analysis | Output |
+| --- | --- | --- |
+| 1. Genome QC | Genome size, contig count, N50, GC content | Quality summary and selection |
+| 2. Gene screening | ResFinder, VFDB, PlasmidFinder using ABRicate | Gene and replicon matches with coordinates |
+| 3. Contig classification | MOB-suite plasmid reconstruction and contig assignments | Chromosome-associated, plasmid-associated, and unresolved contigs |
+| 4. Localization | Integrate gene coordinates, contig assignments, and available MOB-suite MGE matches | Per-contig ARG/VF/MGE localization tables |
+| 5. Visualization | Draw every assembled contig with gene markers | Genome architecture SVG and HTML report |
 
-- Calculates genome length, contig count, N50 and GC% and records QC pass/fail reasons.
-- Screens original assembled contigs with ABRicate using **ResFinder (ARG)**, **VFDB (virulence factor)** and **PlasmidFinder (replicon markers)** by default.
-- Runs **MOB-suite** to predict chromosome/plasmid assignments and plasmid group IDs.
-- Maps each feature to its exact original contig and start/end positions; **unassigned/ambiguous contigs remain unresolved**.
-- Detects repetitive/mobile-element matches from MOB-suite's **MGE report when available (version 3.1+)**. These are *putative MGE matches*, not a comprehensive catalog.
-- Groups a gene as **chromosome-only**, **plasmid-only**, **both**, or **unresolved** from observed hit locations; unresolved hits are retained separately in the summary.
-- Produces **all-contig** chromosome/plasmid/unresolved assembly diagrams (SVG), feature tables and an HTML report.
-- Accepts one genome or several independently analyzed genomes. **No pangenome, SNP phylogeny, ANI or across-isolate comparative inference.**
+### What the figure shows
 
-**Scientific caution:** MOB-suite assignments are predictions; a contig labeled chromosome is not independently proven chromosomal. Reconstructed plasmid groups are not guaranteed complete/circular. The basic assembly QC does not measure completeness or contamination. CheckM2 is a planned *optional* feature, not yet implemented.
+- The **whole assembly** represented by its original contigs, scaled by length.
+- Contigs grouped into **chromosome-associated**, **plasmid-associated**, and **unresolved**.
+- Plasmid-associated contigs organized by their predicted MOB-suite plasmid cluster.
+- Color-coded ARG, VF, and MGE detections at their contig-relative positions.
+- Gene-level summaries showing **chromosome only**, **plasmid only**, **both**, or **unresolved** detection.
+
+No pangenome, phylogeny, or all-versus-all genome comparison is required. ChromoPlas is designed to keep each isolate's workflow focused.
 
 ## Quick start
 
-Installation requires a Linux-compatible environment with **Snakemake, ABRicate, and MOB-suite**, their reference databases, and Python. See [installation instructions](INSTALL.md).
+Once installed:
 
 ~~~bash
-chromoplas genome.fna -o results/ -t 4
-chromoplas assembled_genomes/ -o batch_results/ -t 8
-chromoplas genome.fna -o results/ --dry-run
+# Analyze one assembled genome
+chromoplas isolate.fna -o results/ -t 4
+
+# Analyze a directory of assemblies independently
+chromoplas genomes/ -o batch_results/ -t 8
+
+# Check the installation
 chromoplas doctor
-chromoplas --help
 ~~~
 
-**Input:** assembled \`.fna\`, \`.fasta\`, \`.fa\`, including \`.gz\` variants. **Not input:** FASTQ reads. Use a **fresh output directory for each independent cohort** to avoid mixing previous Snakemake results.
+Accepted input: assembled bacterial .fna, .fasta, or .fa files, including gzip-compressed versions.
 
-## Outputs
+### Installation guides
+
+| Platform | Guide |
+| --- | --- |
+| Debian / Ubuntu | [Step-by-step Linux installation](docs/install-debian.md) |
+| macOS | [Intel and Apple Silicon](docs/install-macos.md) |
+| Windows | [PowerShell with Ubuntu/WSL2](docs/install-windows-powershell.md) |
+
+For a shorter overview, see [INSTALL.md](INSTALL.md).
+
+## Results
 
 ~~~text
 results/
-├── 00_metadata/                   Manifest, resolved configuration
-├── 01_genomes/                    Working genome FASTA
-├── 02_quality/                    FASTA metrics and QC pass/fail list
-├── 04_abricate/                   Per-database, per-isolate hits on original contigs
-├── 05_plasmids/                   MOB-suite predictions, contig report and MGE report
-├── 07_localization/<sample>/
-│   ├── contig_summary.tsv         Original contig + predicted genomic compartment
-│   ├── feature_localization.tsv   Each ARG/VF/MGE/replicon hit with coordinates
-│   ├── gene_localization_summary.tsv
-│   └── architecture.svg           All-contig genome-architecture figure
+├── 02_quality/
+│   └── quality_summary.tsv
+├── 04_abricate/                   # Per-database screening results
+├── 05_plasmids/                   # MOB-suite plasmid/contig assignments
+├── 07_localization/
+│   └── isolate/
+│       ├── contig_summary.tsv
+│       ├── feature_localization.tsv
+│       ├── gene_localization_summary.tsv
+│       └── architecture.svg
 └── 07_reports/
-    ├── report.html                Self-contained report index with linked SVG files
+    ├── report.html
     └── master_summary.tsv
 ~~~
 
-Optional Prokka annotation (default **disabled** to save computation) writes to \`03_annotation/\` when \`annotation.enabled: true\` in custom YAML. There is no separate plasmid ABRicate pass: gene localization uses matches to **original contig sequences**, avoiding duplicated screening and loss of original coordinates.
+Open results/07_reports/report.html in a browser to explore the results and contig map. The TSV files are suitable for downstream analysis, figure preparation, and manuscript methods.
 
-## Figure design
+## Workflow options
 
-The architecture figure displays the **assembled genome as contig-level tracks**, grouped into chromosome-associated, plasmid-associated (sorted by MOB-suite plasmid cluster), and unresolved contigs. Bar lengths are scaled to each contig's length, and feature markers are placed at their original reference coordinates. Every contig is included; large fragmented assemblies produce tall SVGs.
+ChromoPlas uses **Snakemake** for reproducible job execution, **ABRicate** for gene screening, and **MOB-suite** for contig/plasmid assignment. The default workflow avoids unnecessary annotation to keep execution lightweight. Prokka can be enabled as an optional annotation step.
 
-ARG, VF and MGE are colored separately. PlasmidFinder hits are included as **Replicon** entries in tables. MOB-suite primary plasmid clusters are **predicted groupings**, not experimentally verified plasmids.
+For advanced configuration, thresholds and commands, see the [command guide](command_help.md) and [workflow architecture](docs/architecture.md).
 
 ## Documentation
 
-- [Install (Debian / Ubuntu, macOS, Windows via WSL2)](INSTALL.md)
-- [Command reference](command_help.md)
-- [QC and limitations](docs/validation.md)
-- [Developer-oriented architecture/data definitions](docs/architecture.md)
-- [Troubleshooting](docs/troubleshooting.md)
-- [Updating the Conda tools and databases](docs/updating.md)
-- [How to cite the software and underlying tools](CITATION.md)
+[Installation](INSTALL.md) · [Commands](command_help.md) · [Update tools and databases](docs/updating.md) · [Troubleshooting](docs/troubleshooting.md) · [Citations](CITATION.md) · [Scientific interpretation and validation](docs/validation.md)
 
-## Development and validation
+## Project information
 
-~~~bash
-python -m pip install -e '.[test]'
-python -m pytest -q
-python -m compileall -q src
-~~~
+**Version:** 0.3.0 (early release). Automated Python tests and workflow planning checks are available; broader end-to-end biological validation is ongoing.
 
-These unit tests validate interpretation on synthetic input. A **real end-to-end ChromoPlas run** remains required before a stable tagged release.
+**Interpretation:** Chromosomal and plasmid assignments are computational predictions. Ambiguous contigs are reported as **unresolved** rather than being assigned by assumption.
 
-License: [MIT](LICENSE). Current repository URL: https://github.com/afsansarwer/genomeflow (GitHub project rename to \`chromoplas\` is a separate owner action).
+**License:** [MIT](LICENSE) · **Author:** Afsan Sarwer · [Report an issue](https://github.com/afsansarwer/genomeflow/issues)
