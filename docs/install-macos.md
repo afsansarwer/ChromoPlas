@@ -1,6 +1,6 @@
 # macOS installation (Intel and Apple Silicon)
 
-**Experimental:** No full ChromoPlas v0.3 run has yet been validated on macOS. The Python interface is portable, but ABRicate, MOB-suite and their dependent packages may vary by architecture. Package resolution is not guaranteed, especially on Apple Silicon.
+Follow these steps to install ChromoPlas on macOS using Miniforge. Native dependency availability varies by architecture, particularly on Apple Silicon.
 
 ## 1. Identify your architecture
 
@@ -35,7 +35,7 @@ conda activate chromoplas
 python -m pip install --no-deps -e .
 ~~~
 
-**If Mamba reports unsatisfiable dependencies**, stop and record the exact error and architecture. Do not replace unavailable native bioinformatics tools with unrelated pip wheels. On Apple Silicon, an x86_64/Rosetta environment or Linux virtual machine may be an alternative, but those fallbacks have **not** been tested for ChromoPlas.
+If Mamba cannot resolve dependencies on Apple Silicon, use a Linux environment or report your architecture and the package-solver error in a GitHub issue.
 
 ## 4. Verify
 
@@ -54,6 +54,6 @@ chromoplas "$HOME/Downloads/genome.fna" -o "$HOME/chromoplas-results" -t 4
 open "$HOME/chromoplas-results/07_reports/report.html"
 ~~~
 
-Replace the sample path with a real **assembled** genome. Try a single well-characterized isolate and validate its biological results before batch analysis.
+Replace the sample path with a real **assembled** genome. Start with one known bacterial assembly before batch analysis.
 
 See [update-all instructions](updating.md), [Troubleshooting](troubleshooting.md), [command reference](../command_help.md), [validation notes](validation.md), and [Miniforge](https://github.com/conda-forge/miniforge).
