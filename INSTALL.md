@@ -1,4 +1,4 @@
-# Install ChromoPlas v0.3 (development)
+# Install ChromoPlas
 
 ChromoPlas runs on assembled bacterial FASTA input. It needs Snakemake, ABRicate and MOB-suite in a Linux environment with initialized databases. macOS native installs are experimental; on Windows use Ubuntu in WSL2.
 
@@ -12,14 +12,12 @@ bash Miniforge3.sh -b -p "$HOME/miniforge3"
 source "$HOME/miniforge3/etc/profile.d/conda.sh"
 git clone https://github.com/afsansarwer/genomeflow.git
 cd genomeflow
-git switch chromoplas-v0.3-core
 mamba create -y -n chromoplas -c conda-forge -c bioconda python=3.11 'snakemake>=8,<10' abricate mob_suite typer pyyaml pip pytest
 conda activate chromoplas
 python -m pip install --no-deps -e .
 chromoplas doctor
 ~~~
 
-After the development branch is merged, the git switch command is unnecessary.
 
 ## macOS
 
@@ -43,4 +41,4 @@ chromoplas isolate.fna -o results --dry-run
 
 Use a new output directory for independent projects. The first dry-run can show a partial DAG because HQ selection is a Snakemake checkpoint.
 
-Prokka is optional, and must be installed separately if enabled in YAML. CheckM2 and Bakta are not integrated into the v0.3 development candidate. See command_help.md, docs/architecture.md, docs/validation.md and docs/updating.md.
+Prokka is optional, and must be installed separately if enabled in YAML. For additional options, see the linked command guide. See command_help.md, docs/architecture.md, docs/validation.md and docs/updating.md.
