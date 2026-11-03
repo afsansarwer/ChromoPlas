@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# Update the GenomeFlow source, all Conda packages in its environment,
+# Update the ChromoPlas source, all Conda packages in its environment,
 # ABRicate databases, MOB-suite reference data and optional Bakta database.
 # Run from Linux/macOS/WSL2, NEVER native Windows PowerShell.
 set -Eeuo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ENV_NAME="genomeflow"
+ENV_NAME="chromoplas"
 CONFIRM=0
 BAKTA_DB_PATH=""
 
 usage() {
   cat <<'HELP'
-GenomeFlow environment/database updater (Linux, macOS, WSL2)
+ChromoPlas environment/database updater (Linux, macOS, WSL2)
 Usage: bash scripts/update-all.sh [--yes] [--bakta-db /absolute/path]
   --yes                Accept the explicit update prompt (non-interactive)
   --bakta-db PATH      Also update an existing optional Bakta DB at PATH
@@ -57,12 +57,12 @@ if (( !CONFIRM )); then
   [[ "$answer" == UPDATE ]] || { echo "Cancelled."; exit 1; }
 fi
 
-snapshot_dir="$HOME/.local/share/genomeflow/update-snapshots/$(date -u +%Y%m%dT%H%M%SZ)"
+snapshot_dir="$HOME/.local/share/chromoplas/update-snapshots/$(date -u +%Y%m%dT%H%M%SZ)"
 mkdir -p "$snapshot_dir"
 echo "Version snapshots: $snapshot_dir"
 conda list -n "$ENV_NAME" --explicit > "$snapshot_dir/conda-before-explicit.txt"
 conda env export -n "$ENV_NAME" > "$snapshot_dir/environment-before.yaml"
-git -C "$ROOT" rev-parse HEAD > "$snapshot_dir/genomeflow-commit-before.txt"
+git -C "$ROOT" rev-parse HEAD > "$snapshot_dir/chromoplas-commit-before.txt"
 
 prefix="$(conda run -n "$ENV_NAME" python -c 'import sys; print(sys.prefix)' | tail -n 1)"
 [[ -d "$prefix/conda-meta" ]] || { echo "Environment not found: $prefix" >&2; exit 2; }
@@ -85,18 +85,18 @@ trap restore_pins EXIT
 # Temporary compatibility pins; never modify the base environment.
 printf '\npython 3.11.*\nsnakemake >=8,<10\n' >> "$pinfile"
 
-echo "1/6 Updating GenomeFlow source (fast-forward only)..."
+echo "1/6 Updating ChromoPlas source (fast-forward only)..."
 git -C "$ROOT" pull --ff-only
 
 echo "2/6 Updating all Conda packages while retaining Python 3.11 and Snakemake <10..."
 mamba update -y -n "$ENV_NAME" -c conda-forge -c bioconda --all
 
-echo "3/6 Revalidating required packages and reinstalling editable GenomeFlow..."
+echo "3/6 Revalidating required packages and reinstalling editable ChromoPlas..."
 mamba install -y -n "$ENV_NAME" -c conda-forge -c bioconda \
-  'python=3.11' 'snakemake>=8,<10' prokka abricate mob_suite typer pyyaml pip pytest
+  'python=3.11' 'snakemake>=8,<10' abricate mob_suite typer pyyaml pip pytest
 conda run -n "$ENV_NAME" python -m pip install --no-deps -e "$ROOT"
 
-echo "4/6 Refreshing all three GenomeFlow default ABRicate reference databases..."
+echo "4/6 Refreshing all three ChromoPlas default ABRicate reference databases..."
 for db in resfinder vfdb plasmidfinder; do
   echo "Updating ABRicate database: $db"
   conda run -n "$ENV_NAME" abricate-get_db --db "$db" --force
@@ -120,13 +120,13 @@ else
 fi
 
 echo "6/6 Verifying environment and running unit tests..."
-conda run -n "$ENV_NAME" genomeflow --help >/dev/null
+conda run -n "$ENV_NAME" chromoplas --help >/dev/null
 (
   cd "$ROOT"
   conda run -n "$ENV_NAME" python -m pytest -q
 )
 conda list -n "$ENV_NAME" --explicit > "$snapshot_dir/conda-after-explicit.txt"
 conda env export -n "$ENV_NAME" > "$snapshot_dir/environment-after.yaml"
-git -C "$ROOT" rev-parse HEAD > "$snapshot_dir/genomeflow-commit-after.txt"
+git -C "$ROOT" rev-parse HEAD > "$snapshot_dir/chromoplas-commit-after.txt"
 echo "Update complete. Snapshots stored in: $snapshot_dir"
 echo "IMPORTANT: for a comparative study, retain prior versions or rerun the cohort consistently."
