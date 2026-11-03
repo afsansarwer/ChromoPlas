@@ -14,12 +14,8 @@ def _svg_text(value):
     return escape(str(value), quote=True)
 
 
-def architecture_svg(sample, contigs, features, destination, max_contigs=120):
-    """Draw original contigs grouped by prediction with feature coordinate ticks.
-
-    All contigs are represented in the TSV. Long assemblies may have too many
-    contigs for a legible SVG; the figure then labels the display as partial.
-    """
+def architecture_svg(sample, contigs, features, destination):
+    """Draw every original contig grouped by prediction with coordinate ticks."""
     groups = {"chromosome": [], "plasmid": [], "unresolved": []}
     for contig in contigs.values():
         groups.get(contig["location"], groups["unresolved"]).append(contig)
@@ -29,7 +25,7 @@ def architecture_svg(sample, contigs, features, destination, max_contigs=120):
     all_rows = []
     for location in ("chromosome", "plasmid", "unresolved"):
         all_rows.extend(groups[location])
-    shown = all_rows[:max_contigs]
+    shown = all_rows
     maximum = max((int(c["length_bp"]) for c in shown), default=1)
     height = max(225, 156 + len(shown) * 32 + 38)
     width = 1200
@@ -44,8 +40,6 @@ def architecture_svg(sample, contigs, features, destination, max_contigs=120):
         f'<text x="25" y="38" font-family="Arial,sans-serif" font-weight="bold" font-size="22" fill="#202936">ChromoPlas | {_svg_text(sample)}</text>',
         '<text x="25" y="62" font-family="Arial,sans-serif" font-size="13" fill="#5d6571">Assembled contigs; length-scaled within this assembly. Positions are within each original contig.</text>',
     ]
-    if len(all_rows) > len(shown):
-        parts.append(f'<text x="25" y="83" font-family="Arial" font-size="13" fill="#b34d4d">Showing first {len(shown)} of {len(all_rows)} contigs; full list in contig_summary.tsv</text>')
     for x, cls, label in ((25, "ARG", "ARG"), (130, "VF", "Virulence factor"), (300, "MGE", "MGE")):
         parts.extend([f'<rect x="{x}" y="102" width="13" height="13" fill="{PALETTE[cls]}"/>',
                       f'<text x="{x+20}" y="113" font-family="Arial" font-size="12" fill="#313b47">{label}</text>'])
