@@ -97,7 +97,7 @@ def test_localize_writes_tables_and_mge(reports, tmp_path):
     assert any(f["feature_class"] == "MGE" for f in features)
     svg = architecture_svg("sample", contigs, features, output / "architecture.svg")
     text = svg.read_text()
-    assert "<svg" in text and "chromosome" in text
+    assert "<svg" in text and "CHROMOSOME" in text
     assert "tet(M)" in text
 
 
