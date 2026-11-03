@@ -1,61 +1,59 @@
-# Troubleshooting ChromoPlas
+# ChromoPlas troubleshooting
 
-## Command not found or wrong Python
+Start with [Installation and verification](../INSTALL.md). Most failures fall into one of four categories: shell activation, missing Python package, missing analysis tool, or missing reference database.
 
-Activate your intended Conda environment before installing or running:
+| Symptom | First check | Resolution |
+| --- | --- | --- |
+| **bash: hash: hashing disabled** | Bash command hashing: **set -o** | [Permanent Omarchy fix](install-omarchy.md) |
+| **mamba shell not initialized** | Confirm whether you use Bash or Zsh | For Bash: **source ~/miniforge3/etc/profile.d/conda.sh** then **conda activate chromoplas** |
+| **chromoplas: command not found** | **echo "$CONDA_DEFAULT_ENV"** | Activate chromoplas, then install the package from the repository root |
+| **snakemake / abricate / mob_recon missing** | **command -v TOOL** | Install the tool in the chromoplas environment with Mamba |
+| **No FASTA assemblies found** | Confirm input path/extension | Provide assembled .fna/.fa/.fasta (or .gz), not FASTQ |
+| **Database error** | **abricate --list** | Install/refresh ABRicate databases and check MOB-suite reference data |
+| **QC FAIL** | **02_quality/quality_summary.tsv** | Review genome assembly statistics and species-appropriate limits |
+
+## Omarchy / Arch: persistent Conda activation fix
+
+In Bash, try the current-session fix:
 
 ~~~bash
+set -h
 source "$HOME/miniforge3/etc/profile.d/conda.sh"
 conda activate chromoplas
-which python chromoplas snakemake abricate mob_recon
 ~~~
 
-If `chromoplas` is missing, from the GitHub repository root run `python -m pip install --no-deps -e .`. This assumes dependencies were installed with Mamba.
+For all new terminals, place **set -h** in your personal **~/.bashrc**, **after Omarchy's initialization and before Conda initialization**. Follow the [full Omarchy guide](install-omarchy.md) for safe backup, ordering, and checks. Do not use the Zsh hook in a Bash session.
 
-## Missing `typer`, `yaml` or `snakemake`
-
-Verify `which python` points inside the **chromoplas** environment. Install Python dependencies into that environment:
+## Environment and command verification
 
 ~~~bash
-mamba install -n chromoplas -c conda-forge typer pyyaml snakemake
-~~~
-
-## First dry-run has only 1–3 jobs
-
-The `select_hq` Snakemake **checkpoint** filters FASTA assemblies based on quality metrics. Snakemake dynamically expands dependent jobs only after that checkpoint executes. A short initial dry-run is not itself an error.
-
-## "No FASTA files found"
-
-Input must be assembled bacterial nucleotide FASTA (`.fna`, `.fa`, `.fasta`, or compressed `.gz` variants). Check directory paths and extensions. FASTQ reads are not supported. Avoid duplicate sample names.
-
-## ABRicate missing database
-
-~~~bash
+echo "$CONDA_DEFAULT_ENV"
+command -v python chromoplas snakemake abricate mob_recon
+chromoplas --help
 abricate --list
+chromoplas doctor
 ~~~
 
-Default databases are **resfinder**, **vfdb**, **plasmidfinder**. Reference data are **not bundled**. Database setup/versioning may vary by ABRicate version; consult [upstream ABRicate](https://github.com/tseemann/abricate) for `abricate-get_db` and `abricate --setupdb` procedures.
+If the environment is active but chromoplas is missing, run from your **local repository root**:
 
-## MOB-suite database setup failed
+~~~bash
+python -m pip install --no-deps -e .
+~~~
 
-MOB-suite initialization may download hundreds of MB. Confirm internet access, enough free disk space and database initialization, consulting [upstream MOB-suite](https://github.com/phac-nml/mob-suite). The presence of a `mob_recon` executable does not prove database availability.
+Without shell activation, you can check the installed package with:
 
-## Optional annotation
+~~~bash
+"$HOME/miniforge3/bin/conda" run -n chromoplas chromoplas --help
+~~~
 
-Prokka can be enabled through the YAML configuration after installing it in the ChromoPlas environment.
+## Reference databases
 
-## Interrupted workflow
+The default screening requires **resfinder, vfdb and plasmidfinder** in ABRicate, along with MOB-suite reference data. Their initial setup or refresh may download large files. See [Update tools and databases](updating.md) and the upstream [ABRicate](https://github.com/tseemann/abricate) / [MOB-suite](https://github.com/phac-nml/mob-suite) instructions.
 
-Rerun the **same command** with the same input and output directory. Snakemake usually resumes completed steps. Preserve the `.snakemake/` folder and examine logs under `results/.snakemake/log/`. Start a new output directory for an unrelated cohort.
+A successful chromoplas doctor check is an environment check, not a guarantee that every reference dataset is initialized. Try one known assembled bacterial genome to verify actual execution.
 
-## Windows PowerShell
+## Rerun and report issues
 
-PowerShell is only a frontend to Ubuntu under WSL2. Use [Windows setup](install-windows-powershell.md) and confirm Miniforge exists at `~/miniforge3` **inside Ubuntu**. Windows-mounted NTFS drives can be slower or behave differently with symlinks; consider running inside the Linux filesystem.
+If Snakemake stops, inspect the console and **results/.snakemake/log/**, fix the cause, and rerun with the **same output and input**. A first dry run can display only the QC-checkpoint jobs; dependent jobs expand after that checkpoint completes.
 
-## Keeping tools and databases updated
-
-Use [the update-all guide](updating.md). Record versions before updates and avoid changing tools/databases halfway through a study.
-
-## Report an issue
-
-[Open a GitHub issue](https://github.com/afsansarwer/genomeflow/issues) including OS and CPU architecture, exact command, relevant error and software/database versions. Never upload confidential biological data or personal identifying metadata.
+For support, [open an issue](https://github.com/afsansarwer/genomeflow/issues) including OS, CPU architecture, the command you ran, the relevant error, chromoplas version, and the external tool/database versions. Do not upload sensitive research data.
