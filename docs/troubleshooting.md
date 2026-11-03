@@ -7,7 +7,7 @@ Activate your intended Conda environment before installing or running:
 ~~~bash
 source "$HOME/miniforge3/etc/profile.d/conda.sh"
 conda activate chromoplas
-which python chromoplas snakemake prokka abricate mob_recon
+which python chromoplas snakemake abricate mob_recon
 ~~~
 
 If \`chromoplas\` is missing, from the GitHub repository root run \`python -m pip install --no-deps -e .\`. This assumes dependencies were installed with Mamba.
@@ -40,9 +40,9 @@ Default databases are **resfinder**, **vfdb**, **plasmidfinder**. Reference data
 
 MOB-suite initialization may download hundreds of MB. Confirm internet access, enough free disk space and database initialization, consulting [upstream MOB-suite](https://github.com/phac-nml/mob-suite). The presence of a \`mob_recon\` executable does not prove database availability.
 
-## Bakta option
+## Optional annotation
 
-Prokka is the default. Bakta is optional but must be installed and its separate reference database configured if selected in YAML.
+Prokka can be enabled through the YAML configuration after installing it in the ChromoPlas environment.
 
 ## Interrupted workflow
 
