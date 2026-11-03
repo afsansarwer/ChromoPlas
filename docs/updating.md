@@ -35,7 +35,7 @@ The script will not install Bakta automatically or guess where its optional data
 | --- | --- |
 | ChromoPlas source | `git pull --ff-only`; refuses a dirty working tree |
 | Python and all Conda packages in `chromoplas` | `mamba update --all`; temporary pins preserve Python 3.11 and Snakemake 8/9 |
-| Required analysis programs | Rechecks/install constraints for Snakemake, Prokka, ABRicate, MOB-suite and Python packages |
+| Required analysis programs | Rechecks/install constraints for Snakemake, ABRicate, MOB-suite and Python packages (Prokka is optional) |
 | ChromoPlas Python package | Reinstalls in editable mode with `python -m pip install --no-deps -e .` |
 | ResFinder, VFDB, PlasmidFinder | Downloads fresh available ABRicate database sources using `abricate-get_db --db NAME --force` and rebuilds indices |
 | MOB-suite | Runs upstream `mob_init` to download/reinitialize its database; **large download**, may also refresh taxonomy data |
@@ -89,7 +89,6 @@ If the WSL distribution is named `Ubuntu-24.04`, use `wsl -d Ubuntu-24.04`. See 
 conda activate chromoplas
 chromoplas --help
 snakemake --version
-prokka --version
 abricate --version
 abricate --list
 mob_recon --version
