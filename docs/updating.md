@@ -2,7 +2,7 @@
 
 ChromoPlas has a **single Linux/macOS/WSL2 maintenance command** for its Conda-based installation. The updater refreshes the GitHub source, **all packages in the `chromoplas` Conda environment**, the **three default ABRicate databases**, and the **MOB-suite reference data**. Bakta is optional and requires an explicit database path.
 
-**Important:** This is a research prototype updater. It has not yet been exercised on every operating system or package combination. Back up valuable research outputs, do not interrupt database setup, and **do not change versions halfway through a comparative study**.
+**Before updating:** Keep an environment snapshot and avoid changing software or database versions in the middle of a study. The updater saves version information before and after changes.
 
 ## One-command update (Linux, Debian/Ubuntu, macOS or WSL2 Ubuntu)
 
