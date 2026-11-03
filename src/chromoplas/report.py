@@ -12,7 +12,7 @@ def generate_report(results_dir, samples):
     for sample in samples:
         quality = qc.get(sample, {})
         passed = quality.get("status") == "PASS"
-        local = results_dir / "07_localization" / sample
+        local = results_dir / "06_localization" / sample
         feature_rows = read_tsv(local / "feature_localization.tsv") if passed else []
         contig_rows = read_tsv(local / "contig_summary.tsv") if passed else []
         genes = read_tsv(local / "gene_localization_summary.tsv") if passed else []
@@ -36,7 +36,7 @@ def generate_report(results_dir, samples):
         if passed:
             svg_path = local / "architecture.svg"
             if svg_path.is_file():
-                img = f'<img loading="lazy" src="../07_localization/{name}/architecture.svg" alt="Contig and feature localization of {name}">'
+                img = f'<img loading="lazy" src="../06_localization/{name}/architecture.svg" alt="Contig and feature localization of {name}">'
             else:
                 img = "<p>Localization map unavailable.</p>"
             cards.append(
@@ -44,9 +44,9 @@ def generate_report(results_dir, samples):
                 f'<p>ARG hits: {rec["arg_hits"]}; VF hits: {rec["vf_hits"]}; MGE hits: {rec["mge_hits"]}. '
                 f'Chromosome / plasmid / unresolved contigs: '
                 f'{rec["chromosomal_contigs"]} / {rec["plasmid_contigs"]} / {rec["unresolved_contigs"]}.</p>'
-                f'{img}<p><a href="../07_localization/{name}/feature_localization.tsv">Feature table</a> · '
-                f'<a href="../07_localization/{name}/contig_summary.tsv">Contig assignments</a> · '
-                f'<a href="../07_localization/{name}/gene_localization_summary.tsv">Gene localization</a></p></section>'
+                f'{img}<p><a href="../06_localization/{name}/feature_localization.tsv">Feature table</a> · '
+                f'<a href="../06_localization/{name}/contig_summary.tsv">Contig assignments</a> · '
+                f'<a href="../06_localization/{name}/gene_localization_summary.tsv">Gene localization</a></p></section>'
             )
         else:
             cards.append(f'<section><h2>{name} <small>QC {escape(rec["qc_status"])}</small></h2>'

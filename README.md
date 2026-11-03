@@ -28,14 +28,31 @@ chromoplas doctor
 
 **Figure:** every assembly contig, grouped by predicted genomic compartment, with color-coded gene hits at contig coordinates. Gene summaries distinguish detections on chromosomes, plasmids, both, or unresolved contigs. Optional Prokka annotation is available via YAML.
 
+## Example visualizations
+
+The following images are **synthetic demonstrations** of the report format, not biological results.
+
+![Assembly architecture with contigs and mapped ARG/VF/MGE features](examples/demo/architecture.svg)
+
+*Assembly overview: original chromosome-associated, plasmid-associated and unresolved contigs, with feature positions.*
+
+![ARG/VF/MGE localization summary by genome compartment](examples/demo/localization-summary.svg)
+
+*Gene-by-compartment summary: chromosome-only, plasmid-only, both and unresolved.*
+
+[Explore the demo gallery](docs/demo-gallery.md) · [Follow the beginner tutorial](docs/beginners-guide.md)
+
 ## Output highlights
 
 ~~~text
 results/
+├── 00_metadata/                         # Inputs and configuration
+├── 01_genomes/                          # Working assemblies
 ├── 02_quality/quality_summary.tsv
+├── 03_annotation/                       # Optional; only if enabled
 ├── 04_abricate/                         # Gene screens
 ├── 05_plasmids/                         # MOB-suite results
-├── 07_localization/<sample>/
+├── 06_localization/<sample>/
 │   ├── contig_summary.tsv
 │   ├── feature_localization.tsv
 │   ├── gene_localization_summary.tsv
@@ -49,7 +66,7 @@ Open the HTML report in your browser to explore the contig-level figures and gen
 
 ## Install and use
 
-**[Installation overview](INSTALL.md)** · [Debian/Ubuntu](docs/install-debian.md) · [Omarchy/Arch (Conda fix)](docs/install-omarchy.md) · [macOS](docs/install-macos.md) · [Windows/WSL2 PowerShell](docs/install-windows-powershell.md)
+**[Beginner's step-by-step guide](docs/beginners-guide.md)** · **[Installation overview](INSTALL.md)** · [Debian/Ubuntu](docs/install-debian.md) · [Omarchy/Arch (Conda fix)](docs/install-omarchy.md) · [macOS](docs/install-macos.md) · [Windows/WSL2 PowerShell](docs/install-windows-powershell.md)
 
 **[Command reference](command_help.md)** · [Update tools/databases](docs/updating.md) · [Troubleshooting](docs/troubleshooting.md) · [Citations](CITATION.md) · [Scientific interpretation](docs/validation.md)
 

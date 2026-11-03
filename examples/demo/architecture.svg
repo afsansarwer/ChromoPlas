@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 568" role="img" aria-label="ChromoPlas synthetic chromosome plasmid contig localization visualization">
+<rect width="1160" height="568" fill="#f7f9fc"/>
+<rect x="20" y="16" width="1120" height="538" rx="17" fill="white" stroke="#dbe4ed"/>
+<text x="48" y="58" font-family="Arial,sans-serif" font-size="26" font-weight="bold" fill="#1e3146">ChromoPlas | Assembly architecture</text>
+<text x="48" y="82" font-family="Arial,sans-serif" font-size="14" fill="#6b7d8d">Synthetic example DEMO01 · all original contigs · positions scaled within each contig</text>
+<rect x="48" y="102" width="14" height="14" rx="3" fill="#cf5260"/>
+<text x="69" y="114" font-family="Arial" font-size="13" fill="#1e3146">ARG</text>
+<rect x="154" y="102" width="14" height="14" rx="3" fill="#2e9c89"/>
+<text x="175" y="114" font-family="Arial" font-size="13" fill="#1e3146">Virulence factor</text>
+<rect x="341" y="102" width="14" height="14" rx="3" fill="#9164b8"/>
+<text x="362" y="114" font-family="Arial" font-size="13" fill="#1e3146">Mobile element</text>
+<text x="48" y="150" font-family="Arial" font-size="15" font-weight="bold" fill="#527eae">CHROMOSOME-ASSOCIATED</text>
+<text x="62" y="186" font-family="Arial" font-size="14" fill="#1e3146">contig_001</text>
+<rect x="250" y="172" width="690.0" height="22" rx="4" fill="#527eae" fill-opacity=".28" stroke="#527eae"/>
+<g><title>tet(M) · contig_001 · 42,000 bp (synthetic)</title><rect x="316.0" y="168" width="7" height="30" rx="2" fill="#cf5260" stroke="#fff"/></g>
+<g><title>fimH · contig_001 · 235,000 bp (synthetic)</title><rect x="633.1" y="168" width="7" height="30" rx="2" fill="#2e9c89" stroke="#fff"/></g>
+<g><title>IS26 · contig_001 · 300,000 bp (synthetic)</title><rect x="739.9" y="168" width="7" height="30" rx="2" fill="#9164b8" stroke="#fff"/></g>
+<text x="966" y="187" font-family="Arial" font-size="12" fill="#586a79">420,000 bp</text>
+<text x="62" y="231" font-family="Arial" font-size="14" fill="#1e3146">contig_002</text>
+<rect x="250" y="217" width="312.1" height="22" rx="4" fill="#527eae" fill-opacity=".28" stroke="#527eae"/>
+<g><title>erm(B) · contig_002 · 110,000 bp (synthetic)</title><rect x="427.7" y="213" width="7" height="30" rx="2" fill="#cf5260" stroke="#fff"/></g>
+<text x="966" y="232" font-family="Arial" font-size="12" fill="#586a79">190,000 bp</text>
+<text x="48" y="258" font-family="Arial" font-size="15" font-weight="bold" fill="#dba14d">PLASMID-ASSOCIATED</text>
+<text x="62" y="294" font-family="Arial" font-size="14" fill="#1e3146">contig_003</text>
+<rect x="250" y="280" width="144.6" height="22" rx="4" fill="#dba14d" fill-opacity=".28" stroke="#dba14d"/>
+<g><title>tet(M) · contig_003 · 24,000 bp (synthetic)</title><rect x="286.4" y="276" width="7" height="30" rx="2" fill="#cf5260" stroke="#fff"/></g>
+<g><title>IS26 · contig_003 · 26,400 bp (synthetic)</title><rect x="290.4" y="276" width="7" height="30" rx="2" fill="#9164b8" stroke="#fff"/></g>
+<text x="966" y="295" font-family="Arial" font-size="12" fill="#586a79">88,000 bp · plasmid_A</text>
+<text x="62" y="339" font-family="Arial" font-size="14" fill="#1e3146">contig_004</text>
+<rect x="250" y="325" width="47.6" height="22" rx="4" fill="#dba14d" fill-opacity=".28" stroke="#dba14d"/>
+<g><title>traT · contig_004 · 11,000 bp (synthetic)</title><rect x="265.1" y="321" width="7" height="30" rx="2" fill="#2e9c89" stroke="#fff"/></g>
+<text x="966" y="340" font-family="Arial" font-size="12" fill="#586a79">29,000 bp · plasmid_A</text>
+<text x="62" y="384" font-family="Arial" font-size="14" fill="#1e3146">contig_005</text>
+<rect x="250" y="370" width="90.4" height="22" rx="4" fill="#dba14d" fill-opacity=".28" stroke="#dba14d"/>
+<g><title>qnrS1 · contig_005 · 38,000 bp (synthetic)</title><rect x="309.4" y="366" width="7" height="30" rx="2" fill="#cf5260" stroke="#fff"/></g>
+<text x="966" y="385" font-family="Arial" font-size="12" fill="#586a79">55,000 bp · plasmid_B</text>
+<text x="48" y="411" font-family="Arial" font-size="15" font-weight="bold" fill="#93a0ad">UNRESOLVED</text>
+<text x="62" y="447" font-family="Arial" font-size="14" fill="#1e3146">contig_006</text>
+<rect x="250" y="433" width="19.7" height="22" rx="4" fill="#93a0ad" fill-opacity=".28" stroke="#93a0ad"/>
+<g><title>blaTEM-1 · contig_006 · 2,500 bp (synthetic)</title><rect x="251.1" y="429" width="7" height="30" rx="2" fill="#cf5260" stroke="#fff"/></g>
+<text x="966" y="448" font-family="Arial" font-size="12" fill="#586a79">12,000 bp</text>
+<line x1="48" y1="515" x2="1111" y2="515" stroke="#dce5ed"/>
+<text x="48" y="541" font-family="Arial" font-size="13" fill="#63768a">ILLUSTRATIVE ONLY — not generated from a biological isolate; compartments are predictions.</text>
+</svg>

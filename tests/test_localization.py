@@ -122,3 +122,24 @@ def test_qc_exclusion_explicit_in_report(tmp_path):
     assert "Excluded from downstream screening" in page
     assert "Not a biological absence call" in page
     assert read_tsv(root / "07_reports/master_summary.tsv")[0]["qc_status"] == "FAIL"
+
+
+def test_localization_output_serial_and_report_links(tmp_path):
+    """Keep generated report links aligned with 06_localization / 07_reports."""
+    from chromoplas.qc import write_tsv
+    root = tmp_path / "results"
+    write_tsv(root / "02_quality/quality_summary.tsv", [
+        {"sample": "demo", "status": "PASS", "reasons": "",
+         "genome_size": 2000, "contigs": 1, "n50": 2000, "gc": 40},
+    ], ["sample", "status", "reasons", "genome_size", "contigs", "n50", "gc"])
+    out = root / "06_localization" / "demo"
+    out.mkdir(parents=True)
+    (out / "architecture.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg"/>')
+    generate_report(root, ["demo"])
+    html = (root / "07_reports/report.html").read_text()
+    assert "../06_localization/demo/architecture.svg" in html
+    assert "../07_localization/" not in html
+    from importlib.resources import files
+    snakefile = files("chromoplas").joinpath("workflow/Snakefile").read_text()
+    assert '06_localization/{sample}/.done' in snakefile
+    assert "07_localization/" not in snakefile

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 990 530" role="img" aria-label="ChromoPlas synthetic gene localization matrix">
+<rect width="990" height="530" fill="#f8fafc"/>
+<rect x="20" y="18" width="950" height="490" rx="16" fill="white" stroke="#dae3eb"/>
+<text x="45" y="62" font-family="Arial" font-size="25" fill="#1e3146" font-weight="bold">ChromoPlas | Gene localization summary</text>
+<text x="45" y="87" font-family="Arial" font-size="13" fill="#607182">Synthetic example DEMO01 · genomic compartment evidence</text>
+<text x="378" y="140" font-family="Arial" font-size="15" font-weight="bold" fill="#34495f" text-anchor="middle">Chromosome</text>
+<text x="548" y="140" font-family="Arial" font-size="15" font-weight="bold" fill="#34495f" text-anchor="middle">Plasmid</text>
+<text x="720" y="140" font-family="Arial" font-size="15" font-weight="bold" fill="#34495f" text-anchor="middle">Unresolved</text>
+<rect x="44" y="153" width="876" height="39" fill="#fff"/>
+<rect x="55" y="164" width="14" height="14" rx="3" fill="#c95565"/>
+<text x="80" y="176" font-family="Arial" font-size="15" fill="#1f3145">tet(M)</text>
+<text x="255" y="176" font-family="Arial" font-size="12" fill="#607182">ARG</text>
+<rect x="351" y="156" width="54" height="29" rx="8" fill="#d9eaf7"/>
+<circle cx="378" cy="171" r="8" fill="#c95565"/>
+<rect x="521" y="156" width="54" height="29" rx="8" fill="#d9eaf7"/>
+<circle cx="548" cy="171" r="8" fill="#c95565"/>
+<rect x="693" y="156" width="54" height="29" rx="8" fill="#edf1f5"/>
+<rect x="44" y="196" width="876" height="39" fill="#f4f7fa"/>
+<rect x="55" y="207" width="14" height="14" rx="3" fill="#c95565"/>
+<text x="80" y="219" font-family="Arial" font-size="15" fill="#1f3145">erm(B)</text>
+<text x="255" y="219" font-family="Arial" font-size="12" fill="#607182">ARG</text>
+<rect x="351" y="199" width="54" height="29" rx="8" fill="#d9eaf7"/>
+<circle cx="378" cy="214" r="8" fill="#c95565"/>
+<rect x="521" y="199" width="54" height="29" rx="8" fill="#edf1f5"/>
+<rect x="693" y="199" width="54" height="29" rx="8" fill="#edf1f5"/>
+<rect x="44" y="239" width="876" height="39" fill="#fff"/>
+<rect x="55" y="250" width="14" height="14" rx="3" fill="#c95565"/>
+<text x="80" y="262" font-family="Arial" font-size="15" fill="#1f3145">qnrS1</text>
+<text x="255" y="262" font-family="Arial" font-size="12" fill="#607182">ARG</text>
+<rect x="351" y="242" width="54" height="29" rx="8" fill="#edf1f5"/>
+<rect x="521" y="242" width="54" height="29" rx="8" fill="#d9eaf7"/>
+<circle cx="548" cy="257" r="8" fill="#c95565"/>
+<rect x="693" y="242" width="54" height="29" rx="8" fill="#edf1f5"/>
+<rect x="44" y="282" width="876" height="39" fill="#f4f7fa"/>
+<rect x="55" y="293" width="14" height="14" rx="3" fill="#c95565"/>
+<text x="80" y="305" font-family="Arial" font-size="15" fill="#1f3145">blaTEM-1</text>
+<text x="255" y="305" font-family="Arial" font-size="12" fill="#607182">ARG</text>
+<rect x="351" y="285" width="54" height="29" rx="8" fill="#edf1f5"/>
+<rect x="521" y="285" width="54" height="29" rx="8" fill="#edf1f5"/>
+<rect x="693" y="285" width="54" height="29" rx="8" fill="#d9eaf7"/>
+<circle cx="720" cy="300" r="8" fill="#c95565"/>
+<rect x="44" y="325" width="876" height="39" fill="#fff"/>
+<rect x="55" y="336" width="14" height="14" rx="3" fill="#2e9c89"/>
+<text x="80" y="348" font-family="Arial" font-size="15" fill="#1f3145">fimH</text>
+<text x="255" y="348" font-family="Arial" font-size="12" fill="#607182">VF</text>
+<rect x="351" y="328" width="54" height="29" rx="8" fill="#d9eaf7"/>
+<circle cx="378" cy="343" r="8" fill="#2e9c89"/>
+<rect x="521" y="328" width="54" height="29" rx="8" fill="#edf1f5"/>
+<rect x="693" y="328" width="54" height="29" rx="8" fill="#edf1f5"/>
+<rect x="44" y="368" width="876" height="39" fill="#f4f7fa"/>
+<rect x="55" y="379" width="14" height="14" rx="3" fill="#2e9c89"/>
+<text x="80" y="391" font-family="Arial" font-size="15" fill="#1f3145">traT</text>
+<text x="255" y="391" font-family="Arial" font-size="12" fill="#607182">VF</text>
+<rect x="351" y="371" width="54" height="29" rx="8" fill="#edf1f5"/>
+<rect x="521" y="371" width="54" height="29" rx="8" fill="#d9eaf7"/>
+<circle cx="548" cy="386" r="8" fill="#2e9c89"/>
+<rect x="693" y="371" width="54" height="29" rx="8" fill="#edf1f5"/>
+<rect x="44" y="411" width="876" height="39" fill="#fff"/>
+<rect x="55" y="422" width="14" height="14" rx="3" fill="#9368bc"/>
+<text x="80" y="434" font-family="Arial" font-size="15" fill="#1f3145">IS26</text>
+<text x="255" y="434" font-family="Arial" font-size="12" fill="#607182">MGE</text>
+<rect x="351" y="414" width="54" height="29" rx="8" fill="#d9eaf7"/>
+<circle cx="378" cy="429" r="8" fill="#9368bc"/>
+<rect x="521" y="414" width="54" height="29" rx="8" fill="#d9eaf7"/>
+<circle cx="548" cy="429" r="8" fill="#9368bc"/>
+<rect x="693" y="414" width="54" height="29" rx="8" fill="#edf1f5"/>
+<text x="45" y="486" font-family="Arial" font-size="13" fill="#617386">Filled marker = detected on at least one predicted contig of that compartment · synthetic data</text>
+</svg>
