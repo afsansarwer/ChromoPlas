@@ -144,9 +144,10 @@ def read_mob_mges(sample, contigs, mob_dir):
             "contig_length_bp": info["length_bp"],
             "location": info["location"], "plasmid_group": info["plasmid_group"],
             "feature_class": "MGE",
-            "feature_name": row.get("mge_id") or row.get("mge_type") or "MGE",
+            "feature_name": row.get("mge_subtype") or row.get("mge_type") or row.get("mge_acs") or row.get("mge_id") or "MGE",
             "start": start, "end": end, "strand": row.get("sstrand", ""),
-            "database": "mob-suite", "identity": "", "coverage": "",
+            "database": "mob-suite", "identity": row.get("pident", ""),
+            "coverage": row.get("qcovhsp", ""),
             "evidence": "MOB-suite MGE hit", "assignment_note": info["assignment_note"],
         })
     return result
