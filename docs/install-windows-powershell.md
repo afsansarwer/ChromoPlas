@@ -1,6 +1,6 @@
-# Windows PowerShell installation (GenomeFlow via WSL2)
+# Windows PowerShell installation (ChromoPlas via WSL2)
 
-**Experimental:** GenomeFlow does **not** include a native Windows build of Prokka, ABRicate or MOB-suite. The provided PowerShell script launches the **Linux GenomeFlow package in Ubuntu under WSL2**. This Windows path has not yet received full end-to-end validation.
+**Experimental:** ChromoPlas does **not** include a native Windows build of Prokka, ABRicate or MOB-suite. The provided PowerShell script launches the **Linux ChromoPlas package in Ubuntu under WSL2**. This Windows path has not yet received full end-to-end validation.
 
 ## 1. Install WSL2 + Ubuntu
 
@@ -30,11 +30,11 @@ bash Miniforge3.sh -b -p "$HOME/miniforge3"
 source "$HOME/miniforge3/etc/profile.d/conda.sh"
 git clone https://github.com/afsansarwer/genomeflow.git
 cd genomeflow
-mamba create -y -n genomeflow -c conda-forge -c bioconda \
-  python=3.11 snakemake prokka abricate mob_suite typer pyyaml pip pytest
-conda activate genomeflow
+mamba create -y -n chromoplas -c conda-forge -c bioconda \
+  python=3.11 snakemake abricate mob_suite typer pyyaml pip pytest
+conda activate chromoplas
 python -m pip install --no-deps -e .
-genomeflow --help
+chromoplas --help
 abricate --list
 ~~~
 
@@ -45,25 +45,25 @@ Skip the Miniforge installation if it already exists; initialize the installed C
 Copy a real assembled bacterial FASTA to your Ubuntu home folder and run:
 
 ~~~bash
-genomeflow "$HOME/genome.fna" -o "$HOME/genomeflow-results" -t 4
+chromoplas "$HOME/genome.fna" -o "$HOME/chromoplas-results" -t 4
 ~~~
 
 For better performance and fewer symlink problems, keep inputs and results **inside WSL2's Linux filesystem**, rather than \`/mnt/c\`. Find outputs from Windows Explorer through \`\\wsl$\Ubuntu\home\<linux-username>\` (adjust distribution name).
 
 ## 3B. Optional: run from Windows PowerShell
 
-Clone the repository to **Windows** as well, to obtain \`scripts\GenomeFlow.ps1\`. This second clone does *not* install Prokka or GenomeFlow into Windows: the pipeline executes from your **Ubuntu installation**.
+Clone the repository to **Windows** as well, to obtain \`scripts\ChromoPlas.ps1\`. This second clone does *not* install Prokka or ChromoPlas into Windows: the pipeline executes from your **Ubuntu installation**.
 
 In PowerShell, change to the folder containing the repository, then:
 
 ~~~powershell
-.\scripts\GenomeFlow.ps1 -InputPath "C:\Users\YOU\Downloads\genome.fna" -OutputPath "C:\Users\YOU\GenomeFlow-results" -Threads 4
+.\scripts\ChromoPlas.ps1 -InputPath "C:\Users\YOU\Downloads\genome.fna" -OutputPath "C:\Users\YOU\ChromoPlas-results" -Threads 4
 ~~~
 
 Directory input and dry run:
 
 ~~~powershell
-.\scripts\GenomeFlow.ps1 -InputPath "C:\Users\YOU\Genomes" -OutputPath "C:\Users\YOU\GenomeFlow-batch" -Threads 8 -DryRun
+.\scripts\ChromoPlas.ps1 -InputPath "C:\Users\YOU\Genomes" -OutputPath "C:\Users\YOU\ChromoPlas-batch" -Threads 8 -DryRun
 ~~~
 
 If your Ubuntu distribution is named \`Ubuntu-24.04\`, append \`-Distribution "Ubuntu-24.04"\`.
@@ -85,7 +85,7 @@ After a completed PowerShell run, open your selected Windows output directory an
 - WSL not installed: [Microsoft WSL installation](https://learn.microsoft.com/en-us/windows/wsl/install).
 - Wrong Ubuntu name: run \`wsl --list --verbose\` and use the correct \`-Distribution\`.
 - "Miniforge not found": the launcher expects Ubuntu Miniforge in \`~/miniforge3\`.
-- "genomeflow missing": verify package installation and Conda environment **inside Ubuntu**, not Windows.
+- "chromoplas missing": verify package installation and Conda environment **inside Ubuntu**, not Windows.
 - Database failures: see [Troubleshooting](troubleshooting.md).
 
 For updating all Linux tools and databases, open Ubuntu/WSL2 and follow [update instructions](updating.md).
