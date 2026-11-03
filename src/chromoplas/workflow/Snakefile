@@ -1,0 +1,166 @@
+"""Snakemake core: independent assemblies, no pangenome or cross-sample inference."""
+import csv
+import gzip
+import json
+import shutil
+import subprocess
+from pathlib import Path
+
+from chromoplas.qc import metrics, assess, write_tsv
+from chromoplas.localization import localize
+from chromoplas.visualization import architecture_svg
+from chromoplas.report import generate_report
+
+SAMPLES = json.loads(Path(config["_manifest"]).read_text())
+IDS = sorted(SAMPLES)
+DBS = config["abricate"]["databases"]
+DB_CLASSES = {db: {"resfinder": "ARG", "vfdb": "VF", "plasmidfinder": "Replicon"}.get(db, "Other") for db in DBS}
+THREADS = max(1, int(config["resources"].get("threads_per_job", 2)))
+PLASMIDS = bool(config["plasmids"].get("enabled", True))
+ANNOTATE = bool(config["annotation"].get("enabled", False))
+ANNOTATOR = config["annotation"].get("tool", "prokka")
+
+
+rule all:
+    input:
+        "07_reports/report.html"
+
+
+rule qc_sample:
+    input:
+        lambda wc: SAMPLES[wc.sample]
+    output:
+        "02_quality/per_sample/{sample}.tsv"
+    run:
+        m = metrics(input[0])
+        status, reason = assess(m, config["quality"])
+        write_tsv(output[0], [{
+            "sample": wildcards.sample, "input_fasta": input[0],
+            **m, "status": status, "reasons": reason,
+        }], ["sample", "input_fasta", "genome_size", "contigs", "n50", "gc", "status", "reasons"])
+
+
+checkpoint select_hq:
+    input:
+        expand("02_quality/per_sample/{sample}.tsv", sample=IDS)
+    output:
+        "02_quality/quality_summary.tsv",
+        "00_metadata/hq_samples.txt"
+    run:
+        rows = []
+        for path in input:
+            with open(path) as file:
+                rows.extend(csv.DictReader(file, delimiter="\t"))
+        write_tsv(output[0], rows, [
+            "sample", "input_fasta", "genome_size", "contigs",
+            "n50", "gc", "status", "reasons",
+        ])
+        Path(output[1]).write_text("".join(
+            row["sample"] + "\n" for row in rows if row["status"] == "PASS"
+        ))
+
+
+def hq_samples(wc):
+    selected = checkpoints.select_hq.get()
+    return Path(selected.output[1]).read_text().splitlines()
+
+
+def final_targets(wc):
+    ids = hq_samples(wc)
+    paths = expand("07_localization/{sample}/.done", sample=ids)
+    if ANNOTATE:
+        paths += expand("03_annotation/{sample}/.done", sample=ids)
+    return paths
+
+
+rule prepare_fasta:
+    input:
+        lambda wc: SAMPLES[wc.sample]
+    output:
+        "01_genomes/{sample}.fna"
+    run:
+        source = gzip.open if str(input[0]).lower().endswith(".gz") else open
+        Path(output[0]).parent.mkdir(parents=True, exist_ok=True)
+        with source(input[0], "rb") as src, open(output[0], "wb") as dst:
+            shutil.copyfileobj(src, dst)
+
+
+rule annotate:
+    input:
+        "01_genomes/{sample}.fna"
+    output:
+        touch("03_annotation/{sample}/.done")
+    threads:
+        THREADS
+    run:
+        if ANNOTATOR != "prokka":
+            raise ValueError("This lightweight ChromoPlas version supports Prokka only when annotation.enabled=true.")
+        folder = Path(f"03_annotation/{wildcards.sample}")
+        folder.mkdir(parents=True, exist_ok=True)
+        subprocess.run([
+            "prokka", "--outdir", str(folder), "--prefix", wildcards.sample,
+            "--cpus", str(threads), "--force", str(input[0])
+        ], check=True)
+
+
+rule screen_genome:
+    input:
+        "01_genomes/{sample}.fna"
+    output:
+        "04_abricate/{db}/{sample}.tsv"
+    wildcard_constraints:
+        db="|".join(DBS)
+    params:
+        minid=config["abricate"]["min_identity"],
+        mincov=config["abricate"]["min_coverage"]
+    shell:
+        "mkdir -p $(dirname {output:q}); "
+        "abricate --db {wildcards.db:q} --minid {params.minid} --mincov {params.mincov} {input:q} > {output:q}"
+
+
+rule reconstruct_plasmids:
+    input:
+        "01_genomes/{sample}.fna"
+    output:
+        touch("05_plasmids/{sample}/.done")
+    threads:
+        THREADS
+    params:
+        directory=lambda wc: f"05_plasmids/{wc.sample}"
+    shell:
+        "mkdir -p {params.directory:q}; "
+        "mob_recon --infile {input:q} --outdir {params.directory:q} --num_threads {threads} --force"
+
+
+def localization_inputs(wc):
+    paths = [f"01_genomes/{wc.sample}.fna"]
+    paths.extend(f"04_abricate/{db}/{wc.sample}.tsv" for db in DBS)
+    if PLASMIDS:
+        paths.append(f"05_plasmids/{wc.sample}/.done")
+    return paths
+
+
+rule localize_sample:
+    input:
+        localization_inputs
+    output:
+        touch("07_localization/{sample}/.done")
+    run:
+        sample = wildcards.sample
+        folder = Path(f"07_localization/{sample}")
+        folder.mkdir(parents=True, exist_ok=True)
+        contigs, features, _ = localize(
+            sample, f"01_genomes/{sample}.fna",
+            "04_abricate", f"05_plasmids/{sample}", folder,
+            DB_CLASSES, plasmids_enabled=PLASMIDS,
+        )
+        architecture_svg(sample, contigs, features, folder / "architecture.svg")
+
+
+rule generate_report:
+    input:
+        final_targets
+    output:
+        "07_reports/report.html"
+    run:
+        generate_report(".", IDS)
