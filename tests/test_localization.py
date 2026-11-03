@@ -27,7 +27,7 @@ def reports(tmp_path, assembly):
         "sample\tpl1\tplasmid\tAD582\tIncF\tmobilizable\n"
     )
     (mob / "mge.report.txt").write_text(
-        "contig_id\tmge_start\tmge_end\tmge_id\tmge_type\n"
+        "contig_id\tcontig_start\tcontig_end\tmge_id\tmge_type\n"
         "pl1\t40\t75\tIS26\tIS\n"
     )
     ab = tmp_path / "abricate" / "resfinder"
