@@ -36,4 +36,6 @@ The default workflow omits Prokka annotation to reduce runtime. Enable Prokka wi
 
 A QC failure is excluded from screening but remains visible in the final report. Ambiguous contigs are retained as unresolved so the results remain interpretable.
 
-See INSTALL.md for installation and docs/architecture.md for assignment logic.
+Install: [Installation overview](INSTALL.md) · [Omarchy/Arch Bash fix](docs/install-omarchy.md) · [Debian/Ubuntu](docs/install-debian.md) · [macOS](docs/install-macos.md) · [Windows/WSL2](docs/install-windows-powershell.md).
+
+Maintenance: [Update tools/databases](docs/updating.md) · [Troubleshooting](docs/troubleshooting.md) · [Workflow architecture](docs/architecture.md).

@@ -1,5 +1,7 @@
 # macOS installation (Intel and Apple Silicon)
 
+See the [main installation checklist](../INSTALL.md) for the common tools and verification commands.
+
 Follow these steps to install ChromoPlas on macOS using Miniforge. Native dependency availability varies by architecture, particularly on Apple Silicon.
 
 ## 1. Identify your architecture

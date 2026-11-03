@@ -1,5 +1,7 @@
 # Debian / Ubuntu installation
 
+For the core setup and verification checklist, see [Installation](../INSTALL.md). Omarchy/Arch users should follow the [Omarchy Bash/Conda guide](install-omarchy.md) instead.
+
 Use this guide to install ChromoPlas on Debian or Ubuntu (x86_64). You will need internet access and storage for MOB-suite reference data.
 
 ## 1. System prerequisites

@@ -23,5 +23,7 @@ jobs:
         run: chromoplas examples/genomes/test_isolate.fna -o /tmp/chromoplas-ci-results --dry-run
       - name: Compile package code
         run: python -m compileall -q src
+      - name: Check shell scripts for syntax errors
+        run: bash -n scripts/check-install.sh scripts/update-all.sh
       - name: Validate citation metadata
         run: python -c "import yaml; x=yaml.safe_load(open('CITATION.cff')); assert x['cff-version']=='1.2.0'"
