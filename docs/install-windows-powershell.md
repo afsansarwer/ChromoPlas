@@ -1,6 +1,6 @@
 # Windows PowerShell installation (ChromoPlas via WSL2)
 
-**Experimental:** ChromoPlas does **not** include a native Windows build of Prokka, ABRicate or MOB-suite. The provided PowerShell script launches the **Linux ChromoPlas package in Ubuntu under WSL2**. This Windows path has not yet received full end-to-end validation.
+**Experimental:** ChromoPlas does **not** include a native Windows build of ABRicate or MOB-suite. The provided PowerShell script launches the **Linux ChromoPlas package in Ubuntu under WSL2**. This Windows path has not yet received full end-to-end validation.
 
 ## 1. Install WSL2 + Ubuntu
 
@@ -52,7 +52,7 @@ For better performance and fewer symlink problems, keep inputs and results **ins
 
 ## 3B. Optional: run from Windows PowerShell
 
-Clone the repository to **Windows** as well, to obtain \`scripts\ChromoPlas.ps1\`. This second clone does *not* install Prokka or ChromoPlas into Windows: the pipeline executes from your **Ubuntu installation**.
+Clone the repository to **Windows** as well, to obtain \`scripts\ChromoPlas.ps1\`. This second clone does *not* install analysis tools into Windows: the pipeline executes from your **Ubuntu installation**.
 
 In PowerShell, change to the folder containing the repository, then:
 
