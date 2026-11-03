@@ -40,6 +40,7 @@ command -v mob_recon
 chromoplas --help
 abricate --list
 chromoplas doctor
+bash scripts/check-install.sh
 ~~~
 
 Check that ABRicate lists **resfinder**, **vfdb**, and **plasmidfinder**, and that MOB-suite's reference data are available. The doctor command checks executables and the ABRicate database list; an actual analysis verifies the remaining tool/database compatibility.
