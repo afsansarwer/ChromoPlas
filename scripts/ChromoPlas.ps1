@@ -1,4 +1,4 @@
-# GenomeFlow PowerShell launcher: Windows -> WSL2 Ubuntu.
+# ChromoPlas PowerShell launcher: Windows -> WSL2 Ubuntu.
 # Analysis tools run in Linux; this is not a native Windows bioinformatics build.
 [CmdletBinding()]
 param(
@@ -39,17 +39,17 @@ if [[ ! -x "$conda_binary" ]]; then
     exit 127
 fi
 case "$4$5" in
-    00) exec "$conda_binary" run --no-capture-output -n genomeflow genomeflow "$1" -o "$2" -t "$3" ;;
-    10) exec "$conda_binary" run --no-capture-output -n genomeflow genomeflow "$1" -o "$2" -t "$3" --dry-run ;;
-    01) exec "$conda_binary" run --no-capture-output -n genomeflow genomeflow "$1" -o "$2" -t "$3" --keep-going ;;
-    11) exec "$conda_binary" run --no-capture-output -n genomeflow genomeflow "$1" -o "$2" -t "$3" --dry-run --keep-going ;;
+    00) exec "$conda_binary" run --no-capture-output -n chromoplas chromoplas "$1" -o "$2" -t "$3" ;;
+    10) exec "$conda_binary" run --no-capture-output -n chromoplas chromoplas "$1" -o "$2" -t "$3" --dry-run ;;
+    01) exec "$conda_binary" run --no-capture-output -n chromoplas chromoplas "$1" -o "$2" -t "$3" --keep-going ;;
+    11) exec "$conda_binary" run --no-capture-output -n chromoplas chromoplas "$1" -o "$2" -t "$3" --dry-run --keep-going ;;
 esac
 '@
 $dry = if ($DryRun) { '1' } else { '0' }
 $keep = if ($KeepGoing) { '1' } else { '0' }
-Write-Host "GenomeFlow via WSL2: $winInput -> $winOutput"
+Write-Host "ChromoPlas via WSL2: $winInput -> $winOutput"
 & wsl.exe --distribution $Distribution --exec bash -lc $script -- $linuxInput $linuxOutput ([string] $Threads) $dry $keep
 if ($LASTEXITCODE -ne 0) {
-    throw "GenomeFlow failed in WSL (exit code $LASTEXITCODE); inspect the output above."
+    throw "ChromoPlas failed in WSL (exit code $LASTEXITCODE); inspect the output above."
 }
 Write-Host "Report: $winOutput\07_reports\report.html"

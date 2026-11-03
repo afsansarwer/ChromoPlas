@@ -1,92 +1,39 @@
-# GenomeFlow command reference (v0.2)
+# ChromoPlas command guide
 
-GenomeFlow accepts **assembled bacterial genome FASTA** files or folders, not raw sequencing reads.
+ChromoPlas analyzes one assembled bacterial FASTA or several assembled genomes independently.
 
-### Installation
+~~~bash
+chromoplas genome.fna -o results/ -t 4
+chromoplas genomes/ -o batch_results/ -t 8
+chromoplas genome.fna -o results/ --dry-run
+chromoplas genome.fna -o results/ --config custom.yaml
+chromoplas doctor
+chromoplas --help
+~~~
 
-- [Debian / Ubuntu](docs/install-debian.md)
-- [macOS (Intel and Apple Silicon)](docs/install-macos.md)
-- [Windows PowerShell + WSL2](docs/install-windows-powershell.md)
-- [General installation overview](INSTALL.md)
+## Advanced mode
 
-### Linux and macOS commands
+~~~bash
+chromoplas init project
+cp genome.fna project/genomes/
+cd project
+chromoplas qc --config config.yaml
+chromoplas run --config config.yaml --cores 4
+~~~
 
-```bash
-# One assembly
-genomeflow genome.fna -o results/ -t 4
+## Output files
 
-# Folder of assemblies
-genomeflow genomes/ -o batch_results/ -t 8
+- 02_quality/quality_summary.tsv: genome QC with PASS/FAIL reasons
+- 04_abricate/: ResFinder ARGs, VFDB virulence hits, PlasmidFinder replicon hits
+- 05_plasmids/: MOB-suite contig report, reconstructed plasmid predictions, MGE report
+- 07_localization/SAMPLE/contig_summary.tsv: original contig IDs and predicted compartments
+- 07_localization/SAMPLE/feature_localization.tsv: feature coordinates on original FASTA contigs
+- 07_localization/SAMPLE/gene_localization_summary.tsv: chromosome, plasmid, both and unresolved categories
+- 07_localization/SAMPLE/architecture.svg: contig-level gene map
+- 07_reports/report.html: isolate QC and visualization index
 
-# Multiple assemblies
-genomeflow sample1.fna sample2.fasta -o results/ -t 4
+The default workflow omits Prokka annotation to reduce runtime. Enable Prokka with annotation.enabled: true in a YAML config and install Prokka separately. CheckM2, Bakta, and dedicated pangenome or across-isolate comparisons are not included.
 
-# Check dependency graph (the QC checkpoint can delay downstream expansion)
-genomeflow genome.fna -o results/ --dry-run
+A QC failure is excluded from screening but remains visible in the final report. Chromosome/plasmid calls and MGE detections are computational predictions, not experimental confirmation.
 
-# Custom thresholds/settings
-genomeflow genome.fna -o results/ --config custom.yaml
-
-# Resume an interrupted run using identical input and output path
-genomeflow genome.fna -o results/ -t 4
-
-# Help
-genomeflow --help
-genomeflow analyze --help
-```
-
-| Option | Function |
-| --- | --- |
-| `-o, --output` | Output directory (required) |
-| `-t, --threads` | Snakemake cores (default 4) |
-| `-c, --config` | Optional YAML configuration |
-| `--dry-run` | Preview planned jobs |
-| `--keep-going` | Continue unrelated jobs after a failure |
-
-**Not implemented in v0.2:** `--strict` and `--resume` flags. Rerunning the same command usually lets Snakemake resume without special flags.
-
-### Windows PowerShell (Ubuntu/WSL2 required)
-
-The PowerShell launcher is an **experimental wrapper for the Linux installation**, not a native Windows genome-analysis implementation. First install GenomeFlow in Ubuntu/WSL2 using the [Windows guide](docs/install-windows-powershell.md).
-
-```powershell
-.\scripts\GenomeFlow.ps1 -InputPath "C:\Users\YOU\Downloads\genome.fna" -OutputPath "C:\Users\YOU\GenomeFlow-results" -Threads 4
-
-# Preview
-.\scripts\GenomeFlow.ps1 -InputPath "C:\Users\YOU\Genomes" -OutputPath "C:\Users\YOU\GenomeFlow-batch" -Threads 4 -DryRun
-```
-
-Supported input extensions: `.fna`, `.fasta`, `.fa`, with optional `.gz`. Avoid duplicate filenames and keep input FASTAs outside the output directory.
-
-### Updating GenomeFlow and databases
-
-From the repository's root folder in Linux/macOS/WSL2:
-
-```bash
-source "$HOME/miniforge3/etc/profile.d/conda.sh"
-conda activate base
-bash scripts/update-all.sh
-```
-
-The updater refreshes the compatible Conda environment, default ABRicate databases and MOB-suite references; optional Bakta databases require `--bakta-db PATH`. See [full update instructions](docs/updating.md), including snapshots and scientific reproducibility warnings.
-
-### Advanced project workflow
-
-```bash
-genomeflow init my_project
-cp genome.fna my_project/genomes/
-cd my_project
-genomeflow doctor --config config.yaml
-genomeflow qc --config config.yaml
-genomeflow run --config config.yaml --cores 4
-```
-
-The current `doctor` command checks executable paths and FASTA count, not complete database readiness.
-
-### Output
-
-`results/02_quality/quality_summary.tsv`: FASTA QC metrics and selection. `03_annotation/`: Prokka or Bakta. `04_abricate/`: genome screening. `05_plasmids/`: MOB-suite predictions. `06_plasmid_abricate/`: plasmid screening. `07_reports/report.html`, `master_summary.tsv`, and `all_abricate_hits.tsv`: reports.
-
-### Scientific considerations
-
-Threshold-based assembly QC is **not** contamination/completeness testing; ABRicate gene calls depend on reference databases; inferred plasmids are not experimentally verified. See [validation and reproducibility](docs/validation.md) and [troubleshooting](docs/troubleshooting.md).
+See INSTALL.md for installation and docs/architecture.md for assignment logic.

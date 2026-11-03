@@ -1,6 +1,6 @@
 # Debian / Ubuntu installation
 
-**Recommended Linux route (experimental on individual distributions).** GenomeFlow has completed an end-to-end run on Linux, but not every Debian or Ubuntu release has been validated. Use an x86_64 system, internet access, and enough storage for MOB-suite reference data.
+**Recommended Linux route (experimental on individual distributions).** GenomeFlow v0.1 previously completed a full Linux analysis, but the new ChromoPlas workflow has not yet completed an independent end-to-end run. Use an x86_64 system, internet access, and enough storage for MOB-suite reference data.
 
 ## 1. System prerequisites
 
@@ -28,9 +28,9 @@ You can run **conda init bash** and restart Bash to enable automatic initializat
 ~~~bash
 git clone https://github.com/afsansarwer/genomeflow.git
 cd genomeflow
-mamba create -y -n genomeflow -c conda-forge -c bioconda \
-  python=3.11 snakemake prokka abricate mob_suite typer pyyaml pip pytest
-conda activate genomeflow
+mamba create -y -n chromoplas -c conda-forge -c bioconda \
+  python=3.11 snakemake abricate mob_suite typer pyyaml pip pytest
+conda activate chromoplas
 python -m pip install --no-deps -e .
 ~~~
 
@@ -39,8 +39,8 @@ The **--no-deps** option assumes all dependencies were installed by Mamba; do no
 ## 4. Check the setup
 
 ~~~bash
-which python genomeflow snakemake prokka abricate mob_recon
-genomeflow --help
+which python chromoplas snakemake abricate mob_recon
+chromoplas --help
 abricate --list
 ~~~
 
@@ -49,9 +49,9 @@ The default workflow expects ABRicate reference databases named **resfinder**, *
 ## 5. Run on assembled bacterial genomes
 
 ~~~bash
-genomeflow /path/to/genome.fna -o "$HOME/genomeflow-results" -t 4
-genomeflow /path/to/genomes/ -o "$HOME/genomeflow-batch" -t 8
-xdg-open "$HOME/genomeflow-results/07_reports/report.html"
+chromoplas /path/to/genome.fna -o "$HOME/chromoplas-results" -t 4
+chromoplas /path/to/genomes/ -o "$HOME/chromoplas-batch" -t 8
+xdg-open "$HOME/chromoplas-results/07_reports/report.html"
 ~~~
 
 The bundled tiny synthetic FASTA is for CLI/QC checks, **not** a meaningful full biological test. Use a real assembled bacterial genome. Do not place inputs inside the output folder.

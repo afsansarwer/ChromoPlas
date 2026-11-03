@@ -1,6 +1,6 @@
 # macOS installation (Intel and Apple Silicon)
 
-**Experimental:** No full GenomeFlow v0.2 run has yet been validated on macOS. The Python interface is portable, but Prokka, ABRicate, MOB-suite and their dependent packages may vary by architecture. Package resolution is not guaranteed, especially on Apple Silicon.
+**Experimental:** No full ChromoPlas v0.3 run has yet been validated on macOS. The Python interface is portable, but ABRicate, MOB-suite and their dependent packages may vary by architecture. Package resolution is not guaranteed, especially on Apple Silicon.
 
 ## 1. Identify your architecture
 
@@ -29,19 +29,19 @@ macOS usually uses **zsh**. You may optionally run **conda init zsh** and open a
 ~~~bash
 git clone https://github.com/afsansarwer/genomeflow.git
 cd genomeflow
-mamba create -y -n genomeflow -c conda-forge -c bioconda \
-  python=3.11 snakemake prokka abricate mob_suite typer pyyaml pip pytest
-conda activate genomeflow
+mamba create -y -n chromoplas -c conda-forge -c bioconda \
+  python=3.11 snakemake abricate mob_suite typer pyyaml pip pytest
+conda activate chromoplas
 python -m pip install --no-deps -e .
 ~~~
 
-**If Mamba reports unsatisfiable dependencies**, stop and record the exact error and architecture. Do not replace unavailable native bioinformatics tools with unrelated pip wheels. On Apple Silicon, an x86_64/Rosetta environment or Linux virtual machine may be an alternative, but those fallbacks have **not** been tested for GenomeFlow.
+**If Mamba reports unsatisfiable dependencies**, stop and record the exact error and architecture. Do not replace unavailable native bioinformatics tools with unrelated pip wheels. On Apple Silicon, an x86_64/Rosetta environment or Linux virtual machine may be an alternative, but those fallbacks have **not** been tested for ChromoPlas.
 
 ## 4. Verify
 
 ~~~bash
-genomeflow --help
-which snakemake prokka abricate mob_recon
+chromoplas --help
+which snakemake abricate mob_recon
 abricate --list
 ~~~
 
@@ -50,8 +50,8 @@ Check that the default ABRicate databases are installed and MOB-suite's database
 ## 5. Run
 
 ~~~bash
-genomeflow "$HOME/Downloads/genome.fna" -o "$HOME/genomeflow-results" -t 4
-open "$HOME/genomeflow-results/07_reports/report.html"
+chromoplas "$HOME/Downloads/genome.fna" -o "$HOME/chromoplas-results" -t 4
+open "$HOME/chromoplas-results/07_reports/report.html"
 ~~~
 
 Replace the sample path with a real **assembled** genome. Try a single well-characterized isolate and validate its biological results before batch analysis.

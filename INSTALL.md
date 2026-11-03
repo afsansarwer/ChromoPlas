@@ -1,50 +1,46 @@
-# Installing GenomeFlow v0.2
+# Install ChromoPlas v0.3 (development)
 
-GenomeFlow processes **assembled bacterial FASTA files**, using external Snakemake, Prokka (or optionally Bakta), ABRicate and MOB-suite tools. **Research prototype:** Mac and Windows/WSL2 routes are experimental and not yet tested end to end.
+ChromoPlas runs on assembled bacterial FASTA input. It needs Snakemake, ABRicate and MOB-suite in a Linux environment with initialized databases. macOS native installs are experimental; on Windows use Ubuntu in WSL2.
 
-Choose a platform-specific step-by-step guide:
+## Debian or Ubuntu
 
-- [Debian / Ubuntu](docs/install-debian.md) — recommended Linux route.
-- [macOS Intel / Apple Silicon](docs/install-macos.md) — experimental; native dependency resolution may vary.
-- [Windows PowerShell + Ubuntu/WSL2](docs/install-windows-powershell.md) — PowerShell calls Linux tools in WSL2; **not a native Windows port**.
-
-## Linux quick installation (Miniforge already installed)
-
-```bash
+~~~bash
+sudo apt update
+sudo apt install -y git curl ca-certificates
+curl -fsSLo Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-$(uname -m).sh"
+bash Miniforge3.sh -b -p "$HOME/miniforge3"
+source "$HOME/miniforge3/etc/profile.d/conda.sh"
 git clone https://github.com/afsansarwer/genomeflow.git
 cd genomeflow
-source "$HOME/miniforge3/etc/profile.d/conda.sh"
-mamba create -y -n genomeflow -c conda-forge -c bioconda \
-  python=3.11 snakemake prokka abricate mob_suite typer pyyaml pip pytest
-conda activate genomeflow
+git switch chromoplas-v0.3-core
+mamba create -y -n chromoplas -c conda-forge -c bioconda python=3.11 'snakemake>=8,<10' abricate mob_suite typer pyyaml pip pytest
+conda activate chromoplas
 python -m pip install --no-deps -e .
-genomeflow --help
-abricate --list
-```
+chromoplas doctor
+~~~
 
-If Miniforge is missing, install it using the selected OS-specific guide. The ABRicate databases `resfinder`, `vfdb` and `plasmidfinder` should be available; MOB-suite may need a first-time database download.
+After the development branch is merged, the git switch command is unnecessary.
 
-## One-command analysis
+## macOS
 
-```bash
-genomeflow genome.fna -o results/ -t 4
-genomeflow genomes/ -o batch_results/ -t 8
-```
+Use the same installation sequence, replacing the Miniforge download with Miniforge3-MacOSX-$(uname -m).sh. ARM64 package availability may be limited. Native macOS end-to-end testing is pending.
 
-These inputs must be assembled nucleotide FASTAs rather than raw FASTQ reads. Avoid placing source FASTAs inside the output folder. The bundled tiny synthetic example is for input/QC testing, **not complete biological validation**.
+## Windows PowerShell
 
-## Keeping GenomeFlow and its reference databases up to date
+Install Ubuntu via WSL2 from elevated PowerShell with wsl --install -d Ubuntu. Run the Debian/Ubuntu instructions INSIDE Ubuntu. This does not install a native Windows version.
 
-Run `bash scripts/update-all.sh` from a clean Git clone in a Linux/macOS/WSL2 terminal, after initializing Miniforge. See [the full update guide](docs/updating.md) for snapshots, reference database refreshes, and reproducibility precautions. The update is **not** an automatic or transactional rollback.
+## Databases
 
-## For advanced users
+Check abricate --list for resfinder, vfdb and plasmidfinder. MOB-suite requires its own initialized reference database, often downloaded during package post-link initialization.
 
-```bash
-genomeflow init project
-cp genome.fna project/genomes/
-cd project
-genomeflow doctor --config config.yaml
-genomeflow run --config config.yaml --cores 4
-```
+## Quick run
 
-For more options see [command reference](command_help.md), [troubleshooting](docs/troubleshooting.md), and [validation limits](docs/validation.md). Keep your Conda `base` environment untouched.
+~~~bash
+chromoplas isolate.fna -o results -t 4
+chromoplas assemblies/ -o results_batch -t 8
+chromoplas isolate.fna -o results --dry-run
+~~~
+
+Use a new output directory for independent projects. The first dry-run can show a partial DAG because HQ selection is a Snakemake checkpoint.
+
+Prokka is optional, and must be installed separately if enabled in YAML. CheckM2 and Bakta are not integrated into the v0.3 development candidate. See command_help.md, docs/architecture.md, docs/validation.md and docs/updating.md.

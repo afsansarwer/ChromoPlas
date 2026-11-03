@@ -1,82 +1,87 @@
-# GenomeFlow
+# ChromoPlas
 
-**Bacterial genome analysis from assembled FASTA to annotated genes, antimicrobial-resistance screening, predicted plasmids, and a readable report — with one command.**
+**From assembled bacterial genomes to contig-level chromosome/plasmid localization of antimicrobial resistance genes, virulence factors, and mobile genetic elements.**
 
-GenomeFlow is an open-source Python CLI and Snakemake workflow for **assembled bacterial genomes**. It integrates familiar bioinformatics software into a repeatable process designed for microbiology, antimicrobial resistance (AMR), plasmid genomics and One Health research.
+ChromoPlas is an open-source, **lightweight bacterial genome analysis pipeline** built with Python and Snakemake. It independently screens each input genome, predicts which assembled contigs are chromosome-associated or plasmid-associated, joins gene calls to **original contig IDs and nucleotide coordinates**, and creates informative tables and an assembly-scale SVG figure.
 
-~~~bash
-genomeflow genome.fna -o results/ -t 4
-genomeflow genomes/ -o batch_results/ -t 8
-~~~
+> **Release status: v0.3 development candidate.** ChromoPlas is not yet validated on clean installations or broad biological test sets. It is not a clinical diagnostic. The previous GenomeFlow v0.2 is replaced by a new Python package and CLI.
 
-> **Status: GenomeFlow v0.2 — research prototype.** A previous Linux version completed an end-to-end run on one bacterial isolate. **Debian/Ubuntu, macOS and Windows/WSL2 installation paths have not yet been validated end to end.** Do not treat results as clinical diagnostics; independently verify biological conclusions.
+## Main workflow
 
-## What GenomeFlow actually does
+**Assembled FASTA** → **fast QC** → **ABRicate gene screening + MOB-suite contig classification** → **coordinate-level localization** → **SVG architecture map + per-isolate HTML/TSV report**
 
-| Analysis stage | Output | Engine |
-| --- | --- | --- |
-| Assembly QC and HQ selection | Assembly length, contigs, N50, GC% and configurable pass/fail | Python |
-| Genome annotation | Predicted genes and annotated sequences | Prokka (default); Bakta optional |
-| Whole-genome screening | AMR, virulence factor and plasmid replicon matches | ABRicate (ResFinder, VFDB, PlasmidFinder by default) |
-| Plasmid reconstruction | Predicted plasmid-associated sequences | MOB-suite |
-| Predicted plasmid screening | Gene/replicon matches in plasmid predictions | ABRicate |
-| Consolidated reporting | Quality TSV, hits TSV, summary TSV and HTML report | Snakemake/Python |
+What it does:
 
-**Input:** assembled nucleotide genome `.fna`, `.fasta`, `.fa`, optional `.gz`, either a single file or folder. **Not supported:** FASTQ read trimming, genome assembly, contamination/completeness estimates, phylogeny, or experimentally proving plasmid location.
+- Calculates genome length, contig count, N50 and GC% and records QC pass/fail reasons.
+- Screens original assembled contigs with ABRicate using **ResFinder (ARG)**, **VFDB (virulence factor)** and **PlasmidFinder (replicon markers)** by default.
+- Runs **MOB-suite** to predict chromosome/plasmid assignments and plasmid group IDs.
+- Maps each feature to its exact original contig and start/end positions; **unassigned/ambiguous contigs remain unresolved**.
+- Detects repetitive/mobile-element matches from MOB-suite's **MGE report when available (version 3.1+)**. These are *putative MGE matches*, not a comprehensive catalog.
+- Groups a gene as **chromosome-only**, **plasmid-only**, **both**, or **unresolved** from observed hit locations; unresolved hits are retained separately in the summary.
+- Produces **all-contig** chromosome/plasmid/unresolved assembly diagrams (SVG), feature tables and an HTML report.
+- Accepts one genome or several independently analyzed genomes. **No pangenome, SNP phylogeny, ANI or across-isolate comparative inference.**
 
-## Installation
+**Scientific caution:** MOB-suite assignments are predictions; a contig labeled chromosome is not independently proven chromosomal. Reconstructed plasmid groups are not guaranteed complete/circular. The basic assembly QC does not measure completeness or contamination. CheckM2 is a planned *optional* feature, not yet implemented.
 
-Choose an operating-system guide:
+## Quick start
 
-| Platform | Documentation | Support |
-| --- | --- | --- |
-| Debian / Ubuntu | [Linux instructions](docs/install-debian.md) | Recommended starting environment; distribution-specific validation pending |
-| macOS Intel and Apple Silicon | [macOS instructions](docs/install-macos.md) | Experimental: native dependency availability varies |
-| Windows PowerShell | [Windows + WSL2 instructions](docs/install-windows-powershell.md) | Experimental PowerShell wrapper launching Ubuntu/WSL2, **not native Windows binaries** |
-| Other Linux | [Installation overview](INSTALL.md) | Linux tools required |
-
-GenomeFlow needs an environment with Snakemake, Prokka, ABRicate, MOB-suite and their reference databases. The Python package alone **does not include these external tools or databases**.
-
-## Quick start (after installation)
+Installation requires a Linux-compatible environment with **Snakemake, ABRicate, and MOB-suite**, their reference databases, and Python. See [installation instructions](INSTALL.md).
 
 ~~~bash
-genomeflow isolate.fna -o results -t 4
-genomeflow assemblies/ -o batch_results -t 8
-genomeflow isolate.fna -o results -t 4 --dry-run
-genomeflow --help
+chromoplas genome.fna -o results/ -t 4
+chromoplas assembled_genomes/ -o batch_results/ -t 8
+chromoplas genome.fna -o results/ --dry-run
+chromoplas doctor
+chromoplas --help
 ~~~
 
-The first Snakemake dry run may show only a small number of jobs because its QC-selection checkpoint expands the downstream dependency graph after execution.
+**Input:** assembled \`.fna\`, \`.fasta\`, \`.fa\`, including \`.gz\` variants. **Not input:** FASTQ reads. Use a **fresh output directory for each independent cohort** to avoid mixing previous Snakemake results.
 
-## Results layout
+## Outputs
 
 ~~~text
 results/
-├── 00_metadata/            # Manifest and resolved configuration
-├── 01_genomes/             # Working genome FASTA files
-├── 02_quality/             # Quality summary and passing samples
-├── 03_annotation/          # Annotation output
-├── 04_abricate/            # Whole-genome database screening
-├── 05_plasmids/            # MOB-suite plasmid predictions
-├── 06_plasmid_abricate/    # Plasmid-derived sequence screening
+├── 00_metadata/                   Manifest, resolved configuration
+├── 01_genomes/                    Working genome FASTA
+├── 02_quality/                    FASTA metrics and QC pass/fail list
+├── 04_abricate/                   Per-database, per-isolate hits on original contigs
+├── 05_plasmids/                   MOB-suite predictions, contig report and MGE report
+├── 07_localization/<sample>/
+│   ├── contig_summary.tsv         Original contig + predicted genomic compartment
+│   ├── feature_localization.tsv   Each ARG/VF/MGE/replicon hit with coordinates
+│   ├── gene_localization_summary.tsv
+│   └── architecture.svg           All-contig genome-architecture figure
 └── 07_reports/
-    ├── report.html
-    ├── master_summary.tsv
-    └── all_abricate_hits.tsv
+    ├── report.html                Self-contained report index with linked SVG files
+    └── master_summary.tsv
 ~~~
 
-**Scientific cautions:** QC based on assembly statistics is not CheckM2-like completeness/contamination analysis. ABRicate matches depend on thresholds and reference database versions. MOB-suite plasmid predictions should not be interpreted as experimentally confirmed plasmids.
+Optional Prokka annotation (default **disabled** to save computation) writes to \`03_annotation/\` when \`annotation.enabled: true\` in custom YAML. There is no separate plasmid ABRicate pass: gene localization uses matches to **original contig sequences**, avoiding duplicated screening and loss of original coordinates.
 
-## Documentation and community
+## Figure design
 
-- [Installation overview](INSTALL.md)
-- [Updating all tools and databases](docs/updating.md)
-- [How to cite GenomeFlow and external tools](CITATION.md)
-- [Machine-readable software citation](CITATION.cff)
+The architecture figure displays the **assembled genome as contig-level tracks**, grouped into chromosome-associated, plasmid-associated (sorted by MOB-suite plasmid cluster), and unresolved contigs. Bar lengths are scaled to each contig's length, and feature markers are placed at their original reference coordinates. Every contig is included; large fragmented assemblies produce tall SVGs.
+
+ARG, VF and MGE are colored separately. PlasmidFinder hits are included as **Replicon** entries in tables. MOB-suite primary plasmid clusters are **predicted groupings**, not experimentally verified plasmids.
+
+## Documentation
+
+- [Install (Debian / Ubuntu, macOS, Windows via WSL2)](INSTALL.md)
 - [Command reference](command_help.md)
-- [Debian/Ubuntu](docs/install-debian.md) · [macOS](docs/install-macos.md) · [Windows PowerShell + WSL2](docs/install-windows-powershell.md)
+- [QC and limitations](docs/validation.md)
+- [Developer-oriented architecture/data definitions](docs/architecture.md)
 - [Troubleshooting](docs/troubleshooting.md)
-- [Validation, limitations and reproducibility](docs/validation.md)
-- [Report problems or suggest features](https://github.com/afsansarwer/genomeflow/issues)
+- [Updating the Conda tools and databases](docs/updating.md)
+- [How to cite the software and underlying tools](CITATION.md)
 
-The test suite can be run with `python -m pytest -q`; these are **unit tests**, not full cross-platform biological validation. **License:** MIT ([LICENSE](LICENSE)).
+## Development and validation
+
+~~~bash
+python -m pip install -e '.[test]'
+python -m pytest -q
+python -m compileall -q src
+~~~
+
+These unit tests validate interpretation on synthetic input. A **real end-to-end ChromoPlas run** remains required before a stable tagged release.
+
+License: [MIT](LICENSE). Current repository URL: https://github.com/afsansarwer/genomeflow (GitHub project rename to \`chromoplas\` is a separate owner action).

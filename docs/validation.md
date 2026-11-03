@@ -1,13 +1,13 @@
-# GenomeFlow: validation and scientific limitations
+# ChromoPlas: validation and scientific limitations
 
-**Project stage: v0.2 research prototype.** A GenomeFlow v0.1 workflow completed an end-to-end 12-step run on one Linux bacterial assembly. The new v0.2 CLI and the cross-platform installation guides have **not** been fully validated end to end on Debian, macOS or Windows/WSL2.
+**Project stage: v0.3 research prototype.** The predecessor GenomeFlow v0.1 completed a 12-step run on one Linux bacterial assembly; the redesigned ChromoPlas workflow is not yet tested end to end. The new v0.3 CLI and the cross-platform installation guides have **not** been fully validated end to end on Debian, macOS or Windows/WSL2.
 
-## What GenomeFlow does not do
+## What ChromoPlas does not do
 
-- GenomeFlow accepts **assembled nucleotide FASTA**, not FASTQ; it does not trim or assemble raw reads.
+- ChromoPlas accepts **assembled nucleotide FASTA**, not FASTQ; it does not trim or assemble raw reads.
 - Assembly size, contig count, N50 and GC% are **not estimates of completeness or contamination**.
 - Default quality thresholds are broad, **not species-specific**; customize for your data.
-- Prokka/Bakta annotations are computational predictions.
+- Optional Prokka annotations are computational predictions; Bakta is not integrated in this version.
 - ABRicate hits are reference database matches whose results depend on identity/coverage thresholds, assembly completeness and database version. Detection does not prove expression or phenotypic resistance; nondetection does not prove absence.
 - MOB-suite plasmid assignment and reconstruction are **computational predictions**, not evidence of complete, experimentally verified or circular plasmids.
 - No clinical diagnostic or antimicrobial prescribing claims are supported.
@@ -24,6 +24,6 @@
 
 ## Reproducibility checklist
 
-Keep GenomeFlow repository commit/tag, input assembly accession and checksums, OS/architecture, full Conda environment export, Snakemake and external tool versions, ABRicate database names and version/date, MOB-suite database version, QC thresholds, full config, intermediate outputs and logs.
+Keep ChromoPlas repository commit/tag, input assembly accession and checksums, OS/architecture, full Conda environment export, Snakemake and external tool versions, ABRicate database names and version/date, MOB-suite database version, QC thresholds, full config, intermediate outputs and logs.
 
 The minimal GitHub Actions Python tests are **not full pipeline integration tests**. Validate interpretations independently before using results in a manuscript.

@@ -1,25 +1,21 @@
 project:
-  name: example
   output: results
 input:
   genomes: genomes
 quality:
   min_genome_size: 0
-  max_genome_size: 10000000
+  max_genome_size: 15000000
   max_contigs: 500
   min_n50: 0
   min_gc: 0
   max_gc: 100
 annotation:
-  tool: prokka # prokka or bakta
-  bakta_db: null
+  enabled: false
 abricate:
   databases: [resfinder, vfdb, plasmidfinder]
   min_identity: 90
   min_coverage: 80
 plasmids:
   enabled: true
-  min_identity: 90
-  min_coverage: 90
 resources:
   threads_per_job: 2
