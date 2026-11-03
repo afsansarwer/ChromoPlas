@@ -1,6 +1,6 @@
 # Windows PowerShell installation (ChromoPlas via WSL2)
 
-**Experimental:** ChromoPlas does **not** include a native Windows build of ABRicate or MOB-suite. The provided PowerShell script launches the **Linux ChromoPlas package in Ubuntu under WSL2**. This Windows path has not yet received full end-to-end validation.
+ChromoPlas runs on Windows through **Ubuntu in WSL2**. Use the provided PowerShell wrapper to run the same Linux analysis pipeline from Windows.
 
 ## 1. Install WSL2 + Ubuntu
 
@@ -74,7 +74,7 @@ If script execution is blocked, and after reviewing the script, the following ad
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 ~~~
 
-**Limitations:** The launcher supports Windows **drive-letter paths** (e.g. \`C:\Data\genome.fna\`) and translates them using WSL's \`wslpath\`; network paths and \`\\wsl$\` paths are not supported by this wrapper. Linux symlinks and filesystem permissions may behave differently on Windows-mounted drives. If this causes errors, run method **3A** inside Ubuntu.
+**Supported paths:** The PowerShell launcher uses Windows **drive-letter paths** (e.g. \`C:\Data\genome.fna\`) and translates them using WSL's \`wslpath\`; network paths and \`\\wsl$\` paths are not supported by this wrapper. Linux symlinks and filesystem permissions may behave differently on Windows-mounted drives. If this causes errors, run method **3A** inside Ubuntu.
 
 ## 4. Open the report
 
