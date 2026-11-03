@@ -1,12 +1,12 @@
-# How to cite GenomeFlow and its dependencies
+# How to cite ChromoPlas and its dependencies
 
-If GenomeFlow contributes to an analysis, please cite **the GenomeFlow software version/commit** and **the primary publications for external tools and reference databases actually used**. The GitHub repository has a machine-readable [CITATION.cff](CITATION.cff) file; use the **Cite this repository** button to export a software citation.
+If ChromoPlas contributes to an analysis, please cite **the ChromoPlas software version/commit** and **the primary publications for external tools and reference databases actually used**. The GitHub repository has a machine-readable [CITATION.cff](CITATION.cff) file; use the **Cite this repository** button to export a software citation.
 
-## GenomeFlow software citation
+## ChromoPlas software citation
 
-> Sarwer, A. (2026). *GenomeFlow: a Snakemake workflow for bacterial genome annotation, antimicrobial resistance screening and plasmid analysis* (Version 0.2.0) [Computer software]. GitHub. https://github.com/afsansarwer/genomeflow
+> Sarwer, A. (2026). *ChromoPlas: a Snakemake workflow for bacterial genome annotation, antimicrobial resistance screening and plasmid analysis* (Version 0.3.0) [Computer software]. GitHub. https://github.com/afsansarwer/genomeflow
 
-**There is currently no published GenomeFlow methods paper or DOI.** Do not invent or imply one. For reproducibility, specify the Git commit hash or an immutable tagged release used in a study. When a verified DOI is issued for a future archived release, the project can update the citation accordingly.
+**There is currently no published ChromoPlas methods paper or DOI.** Do not invent or imply one. For reproducibility, specify the Git commit hash or an immutable tagged release used in a study. When a verified DOI is issued for a future archived release, the project can update the citation accordingly.
 
 ## Core analysis tools
 
@@ -28,10 +28,10 @@ If users change the database list in YAML, they should cite those additional pri
 
 ## Example Methods wording
 
-> Assembled bacterial genomes were processed with GenomeFlow v0.2.0 (Git commit: **[replace with actual commit]**), a Snakemake-based workflow that estimates assembly quality metrics, selects assemblies meeting configurable thresholds, annotates genomes with Prokka, screens assemblies and MOB-suite-reconstructed putative plasmid sequences using ABRicate, and generates consolidated reports. Genomic matches were screened using the ResFinder, VFDB, and PlasmidFinder databases at thresholds documented in the study. Software versions and database release dates were recorded.
+> Assembled bacterial genomes were processed with ChromoPlas v0.3.0 (Git commit: **[replace with actual commit]**), a Snakemake-based workflow that estimates assembly quality metrics, selects assemblies meeting configurable thresholds, annotates genomes with Prokka, screens assemblies and MOB-suite-reconstructed putative plasmid sequences using ABRicate, and generates consolidated reports. Genomic matches were screened using the ResFinder, VFDB, and PlasmidFinder databases at thresholds documented in the study. Software versions and database release dates were recorded.
 
-Edit this text to accurately reflect the settings and tools **actually used**, and cite the publications above. In particular, GenomeFlow's basic quality filter does **not** estimate contamination/completeness, and MOB-suite assignments do **not** experimentally verify plasmid location.
+Edit this text to accurately reflect the settings and tools **actually used**, and cite the publications above. In particular, ChromoPlas's basic quality filter does **not** estimate contamination/completeness, and MOB-suite assignments do **not** experimentally verify plasmid location.
 
 ## Reproducibility checklist
 
-Record the GenomeFlow tag/commit, operating system and architecture, tool versions, Conda environment export, databases and retrieval dates, screening identity/coverage thresholds, sample FASTA checksums, and complete configuration. Updating dependencies between analyses can make results non-comparable without reanalysis. See [update guidance](docs/updating.md) and [validation notes](docs/validation.md).
+Record the ChromoPlas tag/commit, operating system and architecture, tool versions, Conda environment export, databases and retrieval dates, screening identity/coverage thresholds, sample FASTA checksums, and complete configuration. Updating dependencies between analyses can make results non-comparable without reanalysis. See [update guidance](docs/updating.md) and [validation notes](docs/validation.md).
