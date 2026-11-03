@@ -4,16 +4,15 @@ If ChromoPlas contributes to an analysis, please cite **the ChromoPlas software 
 
 ## ChromoPlas software citation
 
-> Sarwer, A. (2026). *ChromoPlas: a Snakemake workflow for bacterial genome annotation, antimicrobial resistance screening and plasmid analysis* (Version 0.3.0) [Computer software]. GitHub. https://github.com/afsansarwer/genomeflow
+> Sarwer, A. (2026). *ChromoPlas: contig-resolved chromosome/plasmid localization of bacterial resistance, virulence and mobile-element determinants* (Version 0.3.0) [Computer software]. GitHub. https://github.com/afsansarwer/genomeflow
 
 **There is currently no published ChromoPlas methods paper or DOI.** Do not invent or imply one. For reproducibility, specify the Git commit hash or an immutable tagged release used in a study. When a verified DOI is issued for a future archived release, the project can update the citation accordingly.
 
 ## Core analysis tools
 
 1. **Snakemake** (workflow execution): Mölder, F., et al. (2021). Sustainable data analysis with Snakemake. *F1000Research, 10*, 33. [Original citation instructions](https://github.com/snakemake/snakemake/blob/main/docs/project_info/citations.rst).
-2. **Prokka** (default annotation): Seemann, T. (2014). Prokka: rapid prokaryotic genome annotation. *Bioinformatics, 30*(14), 2068–2069. https://doi.org/10.1093/bioinformatics/btu153
-3. **Bakta** (only if selected instead of Prokka): Schwengers, O., et al. (2021). Bakta: rapid and standardized annotation of bacterial genomes via alignment-free sequence identification. *Microbial Genomics, 7*(11), 000685. https://doi.org/10.1099/mgen.0.000685
-4. **ABRicate** (whole-genome and plasmid-associated screening): Seemann, T. *ABRicate* [Computer software]. https://github.com/tseemann/abricate. ABRicate's official instructions explicitly request citing **both ABRicate and each screened database**.
+2. **Prokka** (optional annotation): Seemann, T. (2014). Prokka: rapid prokaryotic genome annotation. *Bioinformatics, 30*(14), 2068–2069. https://doi.org/10.1093/bioinformatics/btu153
+4. **ABRicate** (whole-genome screening): Seemann, T. *ABRicate* [Computer software]. https://github.com/tseemann/abricate. ABRicate's official instructions explicitly request citing **both ABRicate and each screened database**.
 5. **MOB-suite** (plasmid reconstruction/typing):
    - Robertson, J. & Nash, J. H. E. (2018). MOB-suite: software tools for clustering, reconstruction and typing of plasmids from draft assemblies. *Microbial Genomics, 4*(8), e000206. https://doi.org/10.1099/mgen.0.000206
    - Robertson, J., Bessonov, K., Schonfeld, J., & Nash, J. H. E. (2020). Universal whole-sequence-based plasmid typing and its utility to prediction of host range and epidemiological surveillance. *Microbial Genomics, 6*(10), mgen000435. https://doi.org/10.1099/mgen.0.000435
@@ -28,7 +27,7 @@ If users change the database list in YAML, they should cite those additional pri
 
 ## Example Methods wording
 
-> Assembled bacterial genomes were processed with ChromoPlas v0.3.0 (Git commit: **[replace with actual commit]**), a Snakemake-based workflow that estimates assembly quality metrics, selects assemblies meeting configurable thresholds, annotates genomes with Prokka, screens assemblies and MOB-suite-reconstructed putative plasmid sequences using ABRicate, and generates consolidated reports. Genomic matches were screened using the ResFinder, VFDB, and PlasmidFinder databases at thresholds documented in the study. Software versions and database release dates were recorded.
+> Assembled bacterial genomes were processed with ChromoPlas v0.3.0 (Git commit: **[replace with actual commit]**), a Snakemake-based workflow that estimates assembly quality metrics, selects assemblies meeting configurable thresholds, screens original assembled contigs with ABRicate, predicts contig locations using MOB-suite, and generates contig-resolved localization maps and consolidated reports. Optional Prokka annotation is disabled by default. Genomic matches were screened using the ResFinder, VFDB, and PlasmidFinder databases at thresholds documented in the study. Software versions and database release dates were recorded.
 
 Edit this text to accurately reflect the settings and tools **actually used**, and cite the publications above. In particular, ChromoPlas's basic quality filter does **not** estimate contamination/completeness, and MOB-suite assignments do **not** experimentally verify plasmid location.
 
