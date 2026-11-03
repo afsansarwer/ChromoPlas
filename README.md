@@ -88,7 +88,7 @@ For advanced configuration, thresholds and commands, see the [command guide](com
 
 ## Project information
 
-**Version:** 0.3.0 (early release). Automated Python tests and workflow planning checks are available; broader end-to-end biological validation is ongoing.
+**Version:** 0.3.0 · Automated Python tests and workflow planning checks are available.
 
 **Interpretation:** Chromosomal and plasmid assignments are computational predictions. Ambiguous contigs are reported as **unresolved** rather than being assigned by assumption.
 
