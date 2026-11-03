@@ -15,7 +15,7 @@ conda create --name chromoplas-backup --clone chromoplas
 
 ## Update all managed tools and default databases
 
-Run **in Bash or Zsh**, from the repository root:
+Run **in Bash**, from the repository root (for Zsh, omit the Bash-only **set -h** line):
 
 ~~~bash
 # On Omarchy/Bash only: enable Bash hashing for Conda activation.
