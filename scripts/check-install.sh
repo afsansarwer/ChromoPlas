@@ -3,7 +3,7 @@
 set -u
 fail=0
 echo "ChromoPlas installation check"
-echo "Conda environment: \${CONDA_DEFAULT_ENV:-not-activated}"
+echo "Conda environment: ${CONDA_DEFAULT_ENV:-not-activated}"
 for program in python chromoplas snakemake abricate mob_recon; do
   if command -v "$program" >/dev/null 2>&1; then
     printf 'OK   %s: %s\n' "$program" "$(command -v "$program")"
