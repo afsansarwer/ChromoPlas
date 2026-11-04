@@ -28,8 +28,8 @@ You can run **conda init bash** and restart Bash to enable automatic initializat
 ## 3. Clone and install
 
 ~~~bash
-git clone https://github.com/afsansarwer/genomeflow.git
-cd genomeflow
+git clone https://github.com/afsansarwer/ChromoPlas.git
+cd ChromoPlas
 mamba create -y -n chromoplas -c conda-forge -c bioconda \
   python=3.11 snakemake abricate mob_suite typer pyyaml pip pytest
 conda activate chromoplas
