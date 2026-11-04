@@ -21,7 +21,7 @@ Run **in Bash**, from the repository root (for Zsh, omit the Bash-only **set -h*
 # On Omarchy/Bash only: enable Bash hashing for Conda activation.
 set -h
 source "$HOME/miniforge3/etc/profile.d/conda.sh"
-cd /path/to/your/genomeflow-clone
+cd /path/to/your/ChromoPlas-clone
 bash scripts/update-all.sh
 ~~~
 
