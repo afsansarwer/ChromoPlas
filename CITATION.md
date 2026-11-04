@@ -4,7 +4,7 @@ If ChromoPlas contributes to an analysis, please cite **the ChromoPlas software 
 
 ## ChromoPlas software citation
 
-> Sarwer, A. (2026). *ChromoPlas: contig-resolved chromosome/plasmid localization of bacterial resistance, virulence and mobile-element determinants* (Version 0.3.0) [Computer software]. GitHub. https://github.com/afsansarwer/genomeflow
+> Sarwer, A. (2026). *ChromoPlas: contig-resolved chromosome/plasmid localization of bacterial resistance, virulence and mobile-element determinants* (Version 0.3.0) [Computer software]. GitHub. https://github.com/afsansarwer/ChromoPlas
 
 **There is currently no published ChromoPlas methods paper or DOI.** Do not invent or imply one. For reproducibility, specify the Git commit hash or an immutable tagged release used in a study. When a verified DOI is issued for a future archived release, the project can update the citation accordingly.
 
