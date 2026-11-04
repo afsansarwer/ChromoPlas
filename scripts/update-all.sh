@@ -34,7 +34,7 @@ while (($#)); do
   esac
 done
 
-for binary in git conda mamba; do
+for binary in git conda; do
   command -v "$binary" >/dev/null 2>&1 || {
     echo "Missing command: $binary. Activate/initialize Miniforge before updating." >&2
     exit 127
@@ -89,10 +89,10 @@ echo "1/6 Updating ChromoPlas source (fast-forward only)..."
 git -C "$ROOT" pull --ff-only
 
 echo "2/6 Updating all Conda packages while retaining Python 3.11 and Snakemake <10..."
-mamba update -y -n "$ENV_NAME" -c conda-forge -c bioconda --all
+conda update -y -n "$ENV_NAME" -c conda-forge -c bioconda --all
 
 echo "3/6 Revalidating required packages and reinstalling editable ChromoPlas..."
-mamba install -y -n "$ENV_NAME" -c conda-forge -c bioconda \
+conda install -y -n "$ENV_NAME" -c conda-forge -c bioconda \
   'python=3.11' 'snakemake>=8,<10' abricate mob_suite typer pyyaml pip pytest
 conda run -n "$ENV_NAME" python -m pip install --no-deps -e "$ROOT"
 

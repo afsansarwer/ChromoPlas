@@ -2,6 +2,21 @@
 
 ChromoPlas turns an **assembled bacterial genome FASTA** into a chromosome/plasmid gene-localization map and a browser report. You do not need to know Python or Snakemake to run it.
 
+## Install first (Ubuntu/Debian/WSL2)
+
+Copy these commands into your Linux terminal (Bash or Zsh):
+
+
+```bash
+git clone https://github.com/afsansarwer/ChromoPlas.git
+cd ChromoPlas
+bash INSTALL.sh
+conda activate chromoplas
+chromoplas doctor
+```
+
+Already cloned? Run \`bash INSTALL.sh\` from that directory. You do **not** need Mamba or a preinstalled Conda: the installer handles these dependencies. It never installs ChromoPlas into \`(base)\`. For Omarchy/Arch and macOS, use the manual [installation guide](../INSTALL.md).
+
 ## 1. Understand the installation
 
 - **Miniforge** provides Conda/Mamba (software environment managers).
@@ -117,7 +132,7 @@ A first dry-run can show only early jobs because Snakemake expands downstream jo
 | Error | Resolution |
 | --- | --- |
 | `hash: hashing disabled` | Run `set -h`; follow [Omarchy fix](install-omarchy.md) |
-| Mamba shell not initialized | Initialize Conda as above; use `conda activate chromoplas` |
+| Conda shell not initialized | Follow the source command printed by `bash INSTALL.sh`, then activate `chromoplas` |
 | `chromoplas: command not found` | Install the ChromoPlas package inside the activated environment |
 | Missing ABRicate database | Run `abricate --list`; see [database update guide](updating.md) |
 | QC `FAIL` | Inspect `02_quality/quality_summary.tsv` |

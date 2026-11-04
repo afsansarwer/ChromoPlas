@@ -1,71 +1,79 @@
-# ChromoPlas installation
+# Install ChromoPlas
 
-**Start here:** ChromoPlas uses Python 3.11, Snakemake, ABRicate, MOB-suite and the ResFinder/VFDB/PlasmidFinder databases. Install these together in a dedicated Miniforge/Mamba environment; do not install them into the base environment.
+## Recommended: one installer command (Ubuntu/Debian/WSL2)
 
-| Operating system | Guide |
-| --- | --- |
-| **Omarchy / Arch Linux** | [Omarchy: Bash hashing + Conda/Mamba activation](docs/install-omarchy.md) |
-| **Debian / Ubuntu** | [Linux installation](docs/install-debian.md) |
-| **macOS (Intel / Apple Silicon)** | [macOS installation](docs/install-macos.md) |
-| **Windows PowerShell** | [Ubuntu/WSL2 installation + launcher](docs/install-windows-powershell.md) |
+From inside a cloned ChromoPlas repository:
 
-## Install using an existing Miniforge installation (Linux)
 
-Run in **Bash**. On Omarchy, initialize Bash hashing first with **set -h** (see the guide above).
+```bash
+bash INSTALL.sh
+```
 
-~~~bash
-set -h
-source "$HOME/miniforge3/etc/profile.d/conda.sh"
+Use the **Linux terminal**, not PowerShell. The installer supports Debian/Ubuntu x86_64 (including WSL2), and it works when the interactive shell is **Bash or Zsh**. It detects existing Miniconda, Miniforge, or Anaconda installations; otherwise it downloads the official Miniforge installer and verifies its SHA256 checksum. No Mamba command is required.
 
-git clone https://github.com/afsansarwer/ChromoPlas.git
-cd ChromoPlas
+What it does:
 
-mamba create -y -n chromoplas -c conda-forge -c bioconda \
-  python=3.11 'snakemake>=8,<10' abricate mob_suite typer pyyaml pip pytest
+1. Finds or installs Conda; never installs the pipeline into \`(base)\`.
+2. Creates or repairs the dedicated \`chromoplas\` Conda environment (Python 3.11, Snakemake 8/9, ABRicate, MOB-suite and Python dependencies).
+3. Installs ChromoPlas inside that environment, independently of the active shell.
+4. Checks the required ResFinder/VFDB/PlasmidFinder ABRicate databases, setting them up if absent, and initializes MOB-suite reference data if needed.
+5. Runs \`chromoplas doctor\` and the installation checker. **Any failure stops the script**; no false success message.
 
+**The first setup requires internet access, available disk space and may download large reference datasets.** The installer does not edit your \`~/.bashrc\` or \`~/.zshrc\`. Do not invoke it with sudo.
+
+After it completes:
+
+
+```bash
+conda activate chromoplas
+chromoplas --help
+chromoplas doctor
+```
+
+If your shell has not initialized Conda, use the \`source .../etc/profile.d/conda.sh\` command printed at the end of installation, then activate. **Each new shell requires activation**.
+
+## If you already have Conda and prefer manual installation
+
+These commands work in **Bash and Zsh**, from the cloned repository directory:
+
+
+```bash
+conda create -y -n chromoplas --override-channels -c conda-forge -c bioconda \
+  'python=3.11' 'snakemake>=8,<10' abricate mob_suite typer pyyaml pip pytest
 conda activate chromoplas
 python -m pip install --no-deps -e .
-~~~
-
-If the repository is already cloned, skip the git clone command, enter that repository's directory and run **git pull --ff-only** before installation. If the chromoplas environment already exists, **do not recreate it**: activate it and run the editable pip installation.
-
-## Verify the installation
-
-~~~bash
-echo "$CONDA_DEFAULT_ENV"           # chromoplas
-command -v chromoplas
-command -v snakemake
-command -v abricate
-command -v mob_recon
-chromoplas --help
 abricate --list
 chromoplas doctor
-bash scripts/check-install.sh
-~~~
+```
 
-Check that ABRicate lists **resfinder**, **vfdb**, and **plasmidfinder**, and that MOB-suite's reference data are available. The doctor command checks executables and the ABRicate database list; an actual analysis verifies the remaining tool/database compatibility.
+For missing ABRicate databases, run \`abricate --setupdb\`; for MOB-suite data, run \`mob_init\`. Both commands operate only after activating \`chromoplas\`. If that environment already exists, skip \`conda create\` or run \`bash INSTALL.sh\` to install or repair dependencies safely.
 
-**Omarchy activation error?** If Bash prints *hash: hashing disabled*, follow the [permanent Omarchy shell fix](docs/install-omarchy.md). If the environment activates but chromoplas is missing, run the Python package installation command from the repository root.
+**Your observed beginner error:**
 
-## Run
+- \`zsh: command not found: mamba\`: Mamba is not required; this project now uses Conda.
+- \`EnvironmentNameNotFound: chromoplas\`: environment creation failed; do not continue with \`pip install\` while \`(base)\` is active.
+- \`chromoplas --help\` works in \`(base)\` but \`abricate\`/\`mob_recon\` are missing: the Python CLI was installed into the wrong environment. Run the guided installer and then \`conda activate chromoplas\`; you do **not** need to uninstall the old base copy to run the correct environment.
 
-~~~bash
-chromoplas isolate.fna -o results/ -t 4
-chromoplas assemblies/ -o batch_results/ -t 8
-~~~
+## First run
 
-View **results/07_reports/report.html** after the workflow completes. Supply assembled bacterial FASTAs, not raw FASTQ reads; keep inputs outside the chosen output directory.
 
-## Optional and maintenance commands
+```bash
+chromoplas examples/genomes/test_isolate.fna -o ~/chromoplas-preview --dry-run
+chromoplas ~/genomes/genome.fna -o ~/chromoplas-results -t 4
+chromoplas ~/genomes/ -o ~/chromoplas-batch -t 8
+```
 
-~~~bash
-# Optional Prokka annotation tool (only if needed for a custom YAML run)
-mamba install -n chromoplas -c conda-forge -c bioconda prokka
+Open \`~/chromoplas-results/07_reports/report.html\` when the real analysis finishes. Input: assembled bacterial FASTA, not FASTQ.
 
-# Run unit tests from the repository root
-python -m pytest -q
-~~~
+## Other platforms and advanced help
 
-Prokka annotation is disabled by default to reduce runtime. For database and tool updates, follow [Updating ChromoPlas](docs/updating.md). For commands, see [Command reference](command_help.md).
+| Platform | Guide |
+| --- | --- |
+| Debian/Ubuntu Linux | [Detailed setup](docs/install-debian.md) |
+| Windows with WSL2 | [WSL2 instructions](docs/install-windows-powershell.md) |
+| Omarchy / Arch | [Conda hashing fix](docs/install-omarchy.md) |
+| macOS Intel/Apple Silicon | [Manual setup; compatibility varies](docs/install-macos.md) |
 
-**Project status:** ChromoPlas v0.3.0 public beta. Automated Python and synthetic orchestration tests have passed; one real-genome workflow completed on Omarchy Linux on 2026-11-05. Independently benchmarked biological accuracy and clean installation on every listed platform are not yet established.
+[Beginner's guide](docs/beginners-guide.md) · [Troubleshooting](docs/troubleshooting.md) · [Command reference](command_help.md) · [Update tools/database versions](docs/updating.md) · [Validation limits](docs/validation.md)
+
+**Science note:** successful installation and execution do not establish independently benchmarked biological accuracy; ChromoPlas v0.3.0 remains public beta.

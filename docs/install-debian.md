@@ -1,65 +1,46 @@
-# Debian / Ubuntu installation
+# Debian / Ubuntu / WSL2 installation
 
-For the core setup and verification checklist, see [Installation](../INSTALL.md). Omarchy/Arch users should follow the [Omarchy Bash/Conda guide](install-omarchy.md) instead.
+**For most users, the whole installation is three commands** in the Debian/Ubuntu terminal (Bash or Zsh):
 
-Use this guide to install ChromoPlas on Debian or Ubuntu (x86_64). You will need internet access and storage for MOB-suite reference data.
 
-## 1. System prerequisites
-
-Open a Bash terminal:
-
-~~~bash
-sudo apt update
-sudo apt install -y git curl ca-certificates
-~~~
-
-## 2. Install Miniforge
-
-If you already installed Miniforge, skip the installer and use the existing Conda installation.
-
-~~~bash
-curl -fsSLo Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-$(uname -m).sh"
-bash Miniforge3.sh -b -p "$HOME/miniforge3"
-source "$HOME/miniforge3/etc/profile.d/conda.sh"
-~~~
-
-You can run **conda init bash** and restart Bash to enable automatic initialization in future terminals.
-
-## 3. Clone and install
-
-~~~bash
+```bash
 git clone https://github.com/afsansarwer/ChromoPlas.git
 cd ChromoPlas
-mamba create -y -n chromoplas -c conda-forge -c bioconda \
-  python=3.11 snakemake abricate mob_suite typer pyyaml pip pytest
+bash INSTALL.sh
+```
+
+The guided installer supports **x86_64** Linux and WSL2, detects your existing Conda, installs Miniforge when missing, creates the separate \`chromoplas\` Conda environment, installs all required tools and databases, then checks the installation. It does not use Mamba, and it stops on failure.
+
+**Already cloned?** Do not clone again: go into your \`ChromoPlas\` directory and execute \`bash INSTALL.sh\`.
+
+**Using Zsh?** The commands work the same way. Do not install into your Conda \`(base)\` environment.
+
+### After installation
+
+
+```bash
 conda activate chromoplas
-python -m pip install --no-deps -e .
-~~~
-
-The **--no-deps** option assumes all dependencies were installed by Mamba; do not run this installation in the Conda base environment.
-
-## 4. Check the setup
-
-~~~bash
-which python chromoplas snakemake abricate mob_recon
+chromoplas doctor
 chromoplas --help
-abricate --list
-~~~
+chromoplas examples/genomes/test_isolate.fna -o ~/chromoplas-preview --dry-run
 
-The default workflow expects ABRicate reference databases named **resfinder**, **vfdb**, and **plasmidfinder**. MOB-suite may need a large first-time reference database download. See [Troubleshooting](troubleshooting.md).
+# Replace this with your own assembled bacterial genome
+chromoplas ~/genomes/genome.fna -o ~/chromoplas-results -t 4
+```
 
-## 5. Run on assembled bacterial genomes
+Results: \`~/chromoplas-results/07_reports/report.html\`.
 
-~~~bash
-chromoplas /path/to/genome.fna -o "$HOME/chromoplas-results" -t 4
-chromoplas /path/to/genomes/ -o "$HOME/chromoplas-batch" -t 8
-xdg-open "$HOME/chromoplas-results/07_reports/report.html"
-~~~
+### WSL2 files
 
-Use a real assembled bacterial genome and keep input files outside the output directory.
+Prefer Linux home directory (\`~/genomes/\`, \`~/chromoplas-results/\`) for input and output. Windows-mounted \`/mnt/c\` and \`/mnt/e\` may be slower or cause filesystem/symlink issues. The repository clone itself can be on a Windows-mounted drive if necessary.
 
-### Update later
+### Troubleshooting
 
-See [update-all instructions](updating.md). This refreshes tools and databases rather than just repository code.
+- \`chromoplas: command not found\` after cloning: run \`bash INSTALL.sh\`. Cloning alone does not install anything.
+- \`mamba: command not found\`: irrelevant; this installer uses Conda only.
+- \`EnvironmentNameNotFound\`: Conda setup did not finish. Rerun the installer; do not install packages from \`(base)\`.
+- \`conda activate\` is unavailable: follow the \`source .../conda.sh\` command printed by the installer.
+- \`chromoplas doctor\` fails: inspect the shown missing tools/databases, or check \`abricate --list\`.
+- MOB-suite's reference data can require a **large** first-time download.
 
-See [command reference](../command_help.md) and [validation limitations](validation.md).
+See [main installation guide](../INSTALL.md), [beginner guide](beginners-guide.md), [troubleshooting](troubleshooting.md), and [scientific limitations](validation.md).

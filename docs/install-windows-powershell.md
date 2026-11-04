@@ -2,7 +2,22 @@
 
 See the [main installation checklist](../INSTALL.md) for the shared tool requirements and verification steps.
 
-ChromoPlas runs on Windows through **Ubuntu in WSL2**. Use the provided PowerShell wrapper to run the same Linux analysis pipeline from Windows.
+ChromoPlas runs on Windows through **Ubuntu in WSL2**. **Recommended:** run directly from the WSL terminal using `bash INSTALL.sh`, even if your default shell is Zsh. The PowerShell wrapper below is optional.
+
+## Quick path if Ubuntu/WSL2 is already working
+
+In your **WSL Linux terminal** (not PowerShell):
+
+
+```bash
+git clone https://github.com/afsansarwer/ChromoPlas.git
+cd ChromoPlas
+bash INSTALL.sh
+conda activate chromoplas
+chromoplas doctor
+```
+
+If you have already cloned it, just run \`bash INSTALL.sh\` in the existing clone. The script uses Conda, never requires Mamba, and will not install into \`(base)\`. See [Debian/WSL beginner setup](install-debian.md).
 
 ## 1. Install WSL2 + Ubuntu
 
@@ -20,27 +35,20 @@ wsl --list --verbose
 
 The Ubuntu distribution should report WSL **version 2**. Its name might be \`Ubuntu-24.04\` instead of \`Ubuntu\`; use that name with the launcher's \`-Distribution\` option.
 
-## 2. Install the actual pipeline inside Ubuntu
+## 2. Install ChromoPlas inside Ubuntu
 
-Open **Ubuntu** (not PowerShell), then enter:
+Open the **Ubuntu/WSL terminal** (Bash or Zsh) and enter:
 
-~~~bash
-sudo apt update
-sudo apt install -y git curl ca-certificates
-curl -fsSLo Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-$(uname -m).sh"
-bash Miniforge3.sh -b -p "$HOME/miniforge3"
-source "$HOME/miniforge3/etc/profile.d/conda.sh"
+
+```bash
 git clone https://github.com/afsansarwer/ChromoPlas.git
 cd ChromoPlas
-mamba create -y -n chromoplas -c conda-forge -c bioconda \
-  python=3.11 snakemake abricate mob_suite typer pyyaml pip pytest
+bash INSTALL.sh
 conda activate chromoplas
-python -m pip install --no-deps -e .
-chromoplas --help
-abricate --list
-~~~
+chromoplas doctor
+```
 
-Skip the Miniforge installation if it already exists; initialize the installed Conda instead. First-time MOB-suite setup may download large reference datasets.
+Skip the clone if it already exists. If \`conda activate\` is unavailable, follow the initialization instruction printed by the installer. The script detects existing Conda at nonstandard paths (for example \`~/miniconda3\`).
 
 ## 3A. Recommended: run directly in Ubuntu
 
