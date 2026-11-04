@@ -11,7 +11,7 @@ import yaml
 
 from .config import default_config, load_config
 from .inputs import discover
-from .qc import metrics, assess, write_tsv
+from .qc import metrics, assess, write_tsv, read_tsv
 
 app = typer.Typer(help="ChromoPlas: contig-resolved chromosome/plasmid gene localization",
                   no_args_is_help=True, add_completion=False)
@@ -81,6 +81,41 @@ def qc(
     typer.echo(f"QC results: {destination}; passing {sum(x['status']=='PASS' for x in rows)}/{len(rows)}")
 
 
+
+def _qc_completion_summary(out: Path) -> int:
+    """Explain why a completed workflow may lack gene screens or figures."""
+    summary_path = out / "02_quality/quality_summary.tsv"
+    rows = read_tsv(summary_path)
+    if not rows:
+        typer.echo(f"ERROR: No assembly QC results found at {summary_path}", err=True)
+        return 2
+    passed = [row for row in rows if row.get("status") == "PASS"]
+    excluded = [row for row in rows if row.get("status") != "PASS"]
+    typer.echo(f"Assembly QC: {len(passed)}/{len(rows)} PASS; {len(excluded)} excluded.")
+    for row in excluded:
+        typer.echo(
+            f"  QC {row.get('status', 'UNKNOWN')}: {row.get('sample', 'unnamed')} "
+            f"(reason: {row.get('reasons') or 'not reported'})",
+            err=True,
+        )
+    if not passed:
+        typer.echo(
+            "NO GENOME ANALYZED: All input assemblies were excluded at QC. "
+            "ARG/VF screening, plasmid prediction and SVG figures were SKIPPED.",
+            err=True,
+        )
+        typer.echo(f"Inspect {summary_path} and {out / '07_reports/report.html'}.", err=True)
+        typer.echo(
+            "Check whether the assembly and QC thresholds are appropriate "
+            "before adjusting thresholds with a custom --config YAML.",
+            err=True,
+        )
+        return 2
+    if excluded:
+        typer.echo("Only QC-PASS assemblies proceeded to gene screening and figures.")
+    return 0
+
+
 @app.command()
 def run(
     config: Path = typer.Option(..., "--config", "-c"),
@@ -115,7 +150,9 @@ def run(
     except FileNotFoundError:
         typer.echo("Snakemake not found in environment", err=True)
         raise typer.Exit(127)
-    raise typer.Exit(result.returncode)
+    if result.returncode != 0 or dry_run:
+        raise typer.Exit(result.returncode)
+    raise typer.Exit(_qc_completion_summary(out))
 
 
 @app.command("analyze")
