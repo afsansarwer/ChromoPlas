@@ -27,7 +27,8 @@ def architecture_svg(sample, contigs, features, destination):
         all_rows.extend(groups[location])
     shown = all_rows
     maximum = max((int(c["length_bp"]) for c in shown), default=1)
-    height = max(225, 156 + len(shown) * 32 + 38)
+    # Reserve two clear legend rows before the first contig track.
+    height = max(265, 215 + len(shown) * 32 + 38)
     width = 1200
     line_start, line_length = 250, 790
     mapped = defaultdict(list)
@@ -40,12 +41,34 @@ def architecture_svg(sample, contigs, features, destination):
         f'<text x="25" y="38" font-family="Arial,sans-serif" font-weight="bold" font-size="22" fill="#202936">ChromoPlas | {_svg_text(sample)}</text>',
         '<text x="25" y="62" font-family="Arial,sans-serif" font-size="13" fill="#5d6571">Assembled contigs; length-scaled within this assembly. Positions are within each original contig.</text>',
     ]
-    for x, cls, label in ((25, "ARG", "ARG"), (130, "VF", "Virulence factor"), (300, "MGE", "MGE")):
-        parts.extend([f'<rect x="{x}" y="102" width="13" height="13" fill="{PALETTE[cls]}"/>',
-                      f'<text x="{x+20}" y="113" font-family="Arial" font-size="12" fill="#313b47">{label}</text>'])
+    # Feature markers and contig compartments use different visual encodings.
+    # Both require legends so a grey replicon hit cannot be confused with
+    # the grey background of an unresolved contig.
+    parts.append('<text x="25" y="106" font-family="Arial" font-size="12" font-weight="bold" fill="#313b47">Feature markers</text>')
+    for x, cls, label in (
+        (170, "ARG", "Resistance gene (ARG)"),
+        (390, "VF", "Virulence factor (VF)"),
+        (610, "MGE", "Mobile element (MGE)"),
+        (830, "Replicon", "Plasmid replicon"),
+    ):
+        parts.extend([
+            f'<rect x="{x}" y="90" width="7" height="20" rx="1" fill="{PALETTE[cls]}"/>',
+            f'<text x="{x+16}" y="105" font-family="Arial" font-size="12" fill="#313b47">{label}</text>',
+        ])
+    parts.append('<text x="25" y="139" font-family="Arial" font-size="12" font-weight="bold" fill="#313b47">Contig tracks</text>')
+    for x, compartment, label in (
+        (170, "chromosome", "Chromosome-associated"),
+        (450, "plasmid", "Plasmid-associated"),
+        (720, "unresolved", "Unresolved"),
+    ):
+        parts.extend([
+            f'<rect x="{x}" y="127" width="34" height="12" rx="3" '
+            f'fill="{PALETTE[compartment]}" opacity="0.38" stroke="{PALETTE[compartment]}"/>',
+            f'<text x="{x+43}" y="138" font-family="Arial" font-size="12" fill="#313b47">{label}</text>',
+        ])
     previous_group = None
     for index, contig in enumerate(shown):
-        y = 150 + index * 32
+        y = 180 + index * 32
         location = contig["location"]
         if location != previous_group:
             parts.append(f'<text x="25" y="{y-9}" font-family="Arial" font-size="12" font-weight="bold" fill="{PALETTE[location]}">{location.upper()}</text>')
@@ -69,7 +92,7 @@ def architecture_svg(sample, contigs, features, destination):
                 f'<g><title>{_svg_text(tooltip)}</title>'
                 f'<rect x="{xpos-3:.2f}" y="{y-4}" width="6" height="24" rx="1" fill="{color}" stroke="#ffffff" stroke-width=".5"/></g>'
             )
-    foot_y = 165 + 32 * len(shown)
+    foot_y = 195 + 32 * len(shown)
     parts.append(f'<text x="25" y="{foot_y}" font-family="Arial" font-size="12" fill="#5d6571">Predicted compartments; not experimentally verified. Unassigned contigs remain unresolved.</text>')
     parts.append('</svg>')
     destination = Path(destination)

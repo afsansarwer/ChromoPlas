@@ -143,3 +143,46 @@ def test_localization_output_serial_and_report_links(tmp_path):
     snakefile = files("chromoplas").joinpath("workflow/Snakefile").read_text()
     assert '06_localization/{sample}/.done' in snakefile
     assert "07_localization/" not in snakefile
+
+
+def test_architecture_svg_explains_all_marker_and_track_colors(tmp_path):
+    """Feature legend must include dark-grey replicons and distinguish tracks."""
+    import xml.etree.ElementTree as ET
+    from chromoplas.visualization import PALETTE
+
+    contigs = {
+        "chr": {"contig_id": "chr", "location": "chromosome", "length_bp": 1000, "plasmid_group": ""},
+        "pl": {"contig_id": "pl", "location": "plasmid", "length_bp": 500, "plasmid_group": "AA452"},
+        "und": {"contig_id": "und", "location": "unresolved", "length_bp": 200, "plasmid_group": ""},
+    }
+    features = [
+        {"contig_id": "pl", "start": 100, "end": 130,
+         "feature_class": "Replicon", "feature_name": "repA"},
+    ]
+    figure = architecture_svg("legend_demo", contigs, features, tmp_path / "architecture.svg")
+    tree = ET.parse(figure)
+    root = tree.getroot()
+    ns = {"svg": "http://www.w3.org/2000/svg"}
+    labels = [elem.text for elem in root.findall(".//svg:text", ns) if elem.text]
+    for required in (
+        "Feature markers", "Resistance gene (ARG)", "Virulence factor (VF)",
+        "Mobile element (MGE)", "Plasmid replicon", "Contig tracks",
+        "Chromosome-associated", "Plasmid-associated", "Unresolved",
+    ):
+        assert required in labels
+    rect_colors = {el.get("fill") for el in root.findall(".//svg:rect", ns)}
+    for category in ("ARG", "VF", "MGE", "Replicon", "chromosome", "plasmid", "unresolved"):
+        assert PALETTE[category] in rect_colors
+    assert PALETTE["Replicon"] != PALETTE["unresolved"]
+    assert "repA" in figure.read_text()
+
+
+def test_architecture_svg_legend_clear_when_no_contigs(tmp_path):
+    """Even an empty architecture retains its full descriptive legend."""
+    import xml.etree.ElementTree as ET
+
+    output = architecture_svg("empty_demo", {}, [], tmp_path / "empty.svg")
+    ET.parse(output)
+    text = output.read_text()
+    assert "Plasmid replicon" in text
+    assert "Unresolved" in text

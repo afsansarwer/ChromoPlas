@@ -6,7 +6,7 @@ These figures use **synthetic, illustrative data**. No real sample sequences or 
 
 ![Demo assembly architecture showing original contigs, chromosome/plasmid assignments and gene markers](../examples/demo/architecture.svg)
 
-The track length shows the relative length of each assembled contig. Blue tracks are chromosome-associated, amber tracks are plasmid-associated and gray tracks are unresolved. Red markers indicate ARGs, green indicate VFs and purple indicate MGE matches. Plasmid-cluster labels connect multiple contigs assigned to one predicted plasmid group.
+The track length shows the relative length of each assembled contig. Blue tracks are chromosome-associated, amber tracks are plasmid-associated and gray tracks are unresolved. Red markers indicate ARGs, green indicate VFs, purple indicate MGE matches, and **dark grey vertical markers indicate plasmid replicon hits** (PlasmidFinder). Light grey horizontal tracks indicate **unresolved contigs**; these are not the same as replicon markers. The actual per-genome SVG includes separate legends for feature markers and predicted contig compartments. Plasmid-cluster labels connect multiple contigs assigned to one predicted plasmid group.
 
 ## 2. Gene localization matrix (illustrative example)
 
