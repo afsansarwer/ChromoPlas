@@ -27,3 +27,12 @@
 Keep ChromoPlas repository commit/tag, input assembly accession and checksums, OS/architecture, full Conda environment export, Snakemake and external tool versions, ABRicate database names and version/date, MOB-suite database version, QC thresholds, full config, intermediate outputs and logs.
 
 The minimal GitHub Actions Python tests are **not full pipeline integration tests**. Validate interpretations independently before using results in a manuscript.
+
+## Reporting safeguards added for the public beta
+
+- Missing or incompatible MOB-suite MGE coordinate reports are recorded as `NA`, not a biological zero; a corresponding `mge_evidence_status` column explains the reason.
+- A gene detected on unresolved contigs alongside chromosome/plasmid hits gets a combined localization category, not an exclusive claim.
+- `00_metadata/provenance.json` records input SHA-256 hashes, run settings, source commit when available, tool version checks and the ABRicate database listing.
+- `gene_localization_matrix.svg` is generated from each genome's own feature summary; images in the demo gallery are explicitly synthetic.
+
+**Still required for a validated release:** publicly documented complete analyses of real, independently characterized bacterial genomes; comparison to expected locations; clean installation on target systems. Automated tests alone are not a substitute.

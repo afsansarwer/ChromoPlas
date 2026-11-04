@@ -4,7 +4,9 @@
 
 ChromoPlas is a lightweight Python based pipeline that screens assembled bacterial genomes for antimicrobial resistance genes (ARGs), virulence factors (VFs), plasmid replicon markers, and available mobile genetic element (MGE) matches. It maps features to their **original contigs and coordinates**, predicts chromosome/plasmid association using MOB-suite, and generates a whole-assembly SVG plus HTML and TSV reports.
 
-![Python tests](https://github.com/afsansarwer/genomeflow/actions/workflows/tests.yml/badge.svg)
+![Python tests](https://github.com/afsansarwer/ChromoPlas/actions/workflows/tests.yml/badge.svg)
+
+**Release status: research prototype.** Not validated end-to-end on all supported platforms; real-genome and reference-database checks are ongoing. [See validation scope](docs/validation.md).
 
 ## Quick start
 
@@ -38,7 +40,7 @@ The following images are **synthetic demonstrations** of the report format, not 
 
 ![ARG/VF/MGE localization summary by genome compartment](examples/demo/localization-summary.svg)
 
-*Gene-by-compartment summary: chromosome-only, plasmid-only, both and unresolved.*
+*Synthetic illustration; real runs now generate a per-genome gene-evidence matrix at `06_localization/<sample>/gene_localization_matrix.svg`.*
 
 [Explore the demo gallery](docs/demo-gallery.md) · [Follow the beginner tutorial](docs/beginners-guide.md)
 
@@ -46,7 +48,7 @@ The following images are **synthetic demonstrations** of the report format, not 
 
 ~~~text
 results/
-├── 00_metadata/                         # Inputs and configuration
+├── 00_metadata/                         # Inputs, config, provenance.json
 ├── 01_genomes/                          # Working assemblies
 ├── 02_quality/quality_summary.tsv
 ├── 03_annotation/                       # Optional; only if enabled
@@ -56,20 +58,23 @@ results/
 │   ├── contig_summary.tsv
 │   ├── feature_localization.tsv
 │   ├── gene_localization_summary.tsv
-│   └── architecture.svg
+│   ├── architecture.svg
+│   └── gene_localization_matrix.svg
 └── 07_reports/
     ├── report.html
     └── master_summary.tsv
 ~~~
 
-Open the HTML report in your browser to explore the contig-level figures and gene summaries.
+Open the HTML report in your browser to explore the contig-level figures and gene summaries. `master_summary.tsv` includes `mge_evidence_status`; **NA means coordinate evidence was unavailable, not that MGEs were biologically absent**. Unresolved gene detections remain explicit in the localization labels.
 
 ## Install and use
 
 **[Beginner's step-by-step guide](docs/beginners-guide.md)** · **[Installation overview](INSTALL.md)** · [Debian/Ubuntu](docs/install-debian.md) · [Omarchy/Arch (Conda fix)](docs/install-omarchy.md) · [macOS](docs/install-macos.md) · [Windows/WSL2 PowerShell](docs/install-windows-powershell.md)
 
+**[Release and validation checklist](docs/release-checklist.md)** · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
+
 **[Command reference](command_help.md)** · [Update tools/databases](docs/updating.md) · [Troubleshooting](docs/troubleshooting.md) · [Citations](CITATION.md) · [Scientific interpretation](docs/validation.md)
 
-**Version:** 0.3.0 · **Author:** Afsan Sarwer · **License:** [MIT](LICENSE)
+**Version:** 0.3.0 (research prototype; beta validation ongoing) · **Author:** Afsan Sarwer · **License:** [MIT](LICENSE)
 
 The workflow reports computational chromosome/plasmid predictions and preserves ambiguous contigs as **unresolved**. See [validation notes](docs/validation.md) for scientific interpretation and current testing scope.

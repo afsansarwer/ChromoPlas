@@ -29,8 +29,8 @@ macOS usually uses **zsh**. You may optionally run **conda init zsh** and open a
 ## 3. Clone and install
 
 ~~~bash
-git clone https://github.com/afsansarwer/genomeflow.git
-cd genomeflow
+git clone https://github.com/afsansarwer/ChromoPlas.git
+cd ChromoPlas
 mamba create -y -n chromoplas -c conda-forge -c bioconda \
   python=3.11 snakemake abricate mob_suite typer pyyaml pip pytest
 conda activate chromoplas

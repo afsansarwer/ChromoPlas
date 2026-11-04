@@ -1,10 +1,31 @@
 """Combine ChromoPlas per-isolate QC and localization into one HTML index."""
+import csv
 from html import escape
 from pathlib import Path
 from .qc import read_tsv, write_tsv
 
 
-def generate_report(results_dir, samples):
+def _mge_evidence_status(results_dir, sample, plasmids_enabled, mapped_hits):
+    """Do not interpret absent or incompatible MGE evidence as zero hits."""
+    if not plasmids_enabled:
+        return "not_run"
+    path = results_dir / "05_plasmids" / sample / "mge.report.txt"
+    if not path.is_file() or path.stat().st_size == 0:
+        return "not_reported"
+    with path.open(newline="") as handle:
+        reader = csv.DictReader(handle, delimiter="\t")
+        columns = set(reader.fieldnames or ())
+        reported_rows = list(reader)
+    if not {"contig_id", "contig_start", "contig_end"}.issubset(columns):
+        return "coordinates_unavailable"
+    if reported_rows and mapped_hits == 0:
+        return "coordinate_rows_unmapped"
+    if len(reported_rows) > mapped_hits:
+        return "coordinate_rows_partly_mapped"
+    return "coordinate_report_available"
+
+
+def generate_report(results_dir, samples, plasmids_enabled=True):
     results_dir = Path(results_dir)
     qc = {row["sample"]: row for row in read_tsv(results_dir / "02_quality/quality_summary.tsv")}
     rows = []
@@ -16,6 +37,8 @@ def generate_report(results_dir, samples):
         feature_rows = read_tsv(local / "feature_localization.tsv") if passed else []
         contig_rows = read_tsv(local / "contig_summary.tsv") if passed else []
         genes = read_tsv(local / "gene_localization_summary.tsv") if passed else []
+        mge_count = sum(x["feature_class"] == "MGE" for x in feature_rows)
+        mge_status = _mge_evidence_status(results_dir, sample, plasmids_enabled, mge_count) if passed else "qc_excluded"
         rec = {
             "sample": sample, "qc_status": quality.get("status", "UNKNOWN"),
             "qc_reasons": quality.get("reasons", ""),
@@ -28,8 +51,9 @@ def generate_report(results_dir, samples):
             "unresolved_contigs": sum(x["location"] == "unresolved" for x in contig_rows),
             "arg_hits": sum(x["feature_class"] == "ARG" for x in feature_rows),
             "vf_hits": sum(x["feature_class"] == "VF" for x in feature_rows),
-            "mge_hits": sum(x["feature_class"] == "MGE" for x in feature_rows),
-            "genes_in_both": sum(x["localization"] == "both" for x in genes),
+            "mge_hits": mge_count if mge_status in {"coordinate_report_available", "coordinate_rows_partly_mapped"} else "NA",
+            "mge_evidence_status": mge_status,
+            "genes_in_both": sum(x["localization"] in {"both", "both_and_unresolved"} for x in genes),
         }
         rows.append(rec)
         name = escape(sample)
@@ -39,12 +63,19 @@ def generate_report(results_dir, samples):
                 img = f'<img loading="lazy" src="../06_localization/{name}/architecture.svg" alt="Contig and feature localization of {name}">'
             else:
                 img = "<p>Localization map unavailable.</p>"
+            matrix_path = local / "gene_localization_matrix.svg"
+            matrix = (
+                f'<img loading="lazy" src="../06_localization/{name}/gene_localization_matrix.svg" '
+                f'alt="Gene localization evidence matrix for {name}">'
+                if matrix_path.is_file() else "<p>Gene localization matrix unavailable.</p>"
+            )
             cards.append(
                 f'<section><h2>{name} <small>QC PASS</small></h2>'
                 f'<p>ARG hits: {rec["arg_hits"]}; VF hits: {rec["vf_hits"]}; MGE hits: {rec["mge_hits"]}. '
+                f'MGE evidence status: {escape(rec["mge_evidence_status"])}. '
                 f'Chromosome / plasmid / unresolved contigs: '
                 f'{rec["chromosomal_contigs"]} / {rec["plasmid_contigs"]} / {rec["unresolved_contigs"]}.</p>'
-                f'{img}<p><a href="../06_localization/{name}/feature_localization.tsv">Feature table</a> · '
+                f'{img}{matrix}<p><a href="../06_localization/{name}/feature_localization.tsv">Feature table</a> · '
                 f'<a href="../06_localization/{name}/contig_summary.tsv">Contig assignments</a> · '
                 f'<a href="../06_localization/{name}/gene_localization_summary.tsv">Gene localization</a></p></section>'
             )
@@ -68,7 +99,7 @@ th{{background:#eef2f8}}img{{max-width:100%;height:auto;border:1px solid #e2e7ec
 small{{color:#657487}}.note{{background:#f7f7f7;padding:14px;border-left:4px solid #d69c48}}
 </style></head><body><h1>ChromoPlas — bacterial gene localization</h1>
 <p class="note">Predicted chromosome/plasmid assignment is not experimental confirmation. Hits are dependent on databases and thresholds. Basic FASTA QC does not establish completeness or contamination. QC failures are not gene absences.</p>
-<table><thead><tr><th>Isolate</th><th>QC</th><th>ARG hits</th><th>VF hits</th><th>MGE hits</th><th>Plasmid contigs</th><th>Unresolved contigs</th></tr></thead>
+<table><thead><tr><th>Isolate</th><th>QC</th><th>ARG hits</th><th>VF hits</th><th>MGE hits (NA = no usable coordinate evidence)</th><th>Plasmid contigs</th><th>Unresolved contigs</th></tr></thead>
 <tbody>{qc_table}</tbody></table>
 {''.join(cards)}</body></html>"""
     (out / "report.html").write_text(page, encoding="utf-8")

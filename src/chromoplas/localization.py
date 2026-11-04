@@ -133,7 +133,7 @@ def read_mob_mges(sample, contigs, mob_dir):
         try:
             start = int(row.get("contig_start", ""))
             end = int(row.get("contig_end", ""))
-        except ValueError:
+        except (TypeError, ValueError):
             continue
         start, end = min(start, end), max(start, end)
         info = contigs[identifier]
@@ -165,9 +165,12 @@ def summarize(sample, features):
         chrom = sum(f["location"] == "chromosome" for f in matches)
         plas = sum(f["location"] == "plasmid" for f in matches)
         unknown = sum(f["location"] == "unresolved" for f in matches)
-        location = ("both" if chrom and plas else
-                    "chromosome_only" if chrom and not plas else
-                    "plasmid_only" if plas and not chrom else "unresolved")
+        location = ("both_and_unresolved" if chrom and plas and unknown else
+                    "both" if chrom and plas else
+                    "chromosome_and_unresolved" if chrom and unknown else
+                    "plasmid_and_unresolved" if plas and unknown else
+                    "chromosome_only" if chrom else
+                    "plasmid_only" if plas else "unresolved")
         summary.append({
             "sample": sample, "feature_class": kind, "feature_name": name,
             "localization": location, "chromosome_hits": chrom,

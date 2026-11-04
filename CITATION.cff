@@ -7,8 +7,8 @@ authors:
     given-names: Afsan
 version: 0.3.0
 license: MIT
-repository-code: "https://github.com/afsansarwer/genomeflow"
-url: "https://github.com/afsansarwer/genomeflow"
+repository-code: "https://github.com/afsansarwer/ChromoPlas"
+url: "https://github.com/afsansarwer/ChromoPlas"
 keywords:
   - bacterial genomics
   - antimicrobial resistance

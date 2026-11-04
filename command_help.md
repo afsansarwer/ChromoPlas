@@ -30,7 +30,10 @@ chromoplas run --config config.yaml --cores 4
 - 06_localization/SAMPLE/feature_localization.tsv: feature coordinates on original FASTA contigs
 - 06_localization/SAMPLE/gene_localization_summary.tsv: chromosome, plasmid, both and unresolved categories
 - 06_localization/SAMPLE/architecture.svg: contig-level gene map
+- 06_localization/SAMPLE/gene_localization_matrix.svg: actual data-derived feature-by-compartment matrix
 - 07_reports/report.html: isolate QC and visualization index
+- 07_reports/master_summary.tsv: gene counts and MGE evidence availability; NA is not zero
+- 00_metadata/provenance.json: run settings, file checksums, software/database snapshots
 
 The default workflow omits Prokka annotation to reduce runtime. Enable Prokka with annotation.enabled: true in a YAML config and install Prokka separately. For available options and configuration, see the linked guides.
 

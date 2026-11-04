@@ -17,8 +17,8 @@ Run in **Bash**. On Omarchy, initialize Bash hashing first with **set -h** (see 
 set -h
 source "$HOME/miniforge3/etc/profile.d/conda.sh"
 
-git clone https://github.com/afsansarwer/genomeflow.git
-cd genomeflow
+git clone https://github.com/afsansarwer/ChromoPlas.git
+cd ChromoPlas
 
 mamba create -y -n chromoplas -c conda-forge -c bioconda \
   python=3.11 'snakemake>=8,<10' abricate mob_suite typer pyyaml pip pytest

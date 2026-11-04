@@ -30,8 +30,8 @@ sudo apt install -y git curl ca-certificates
 curl -fsSLo Miniforge3.sh "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-$(uname -m).sh"
 bash Miniforge3.sh -b -p "$HOME/miniforge3"
 source "$HOME/miniforge3/etc/profile.d/conda.sh"
-git clone https://github.com/afsansarwer/genomeflow.git
-cd genomeflow
+git clone https://github.com/afsansarwer/ChromoPlas.git
+cd ChromoPlas
 mamba create -y -n chromoplas -c conda-forge -c bioconda \
   python=3.11 snakemake abricate mob_suite typer pyyaml pip pytest
 conda activate chromoplas
