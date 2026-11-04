@@ -6,7 +6,7 @@ ChromoPlas is a lightweight Python based pipeline that screens assembled bacteri
 
 ![Python tests](https://github.com/afsansarwer/ChromoPlas/actions/workflows/tests.yml/badge.svg)
 
-**Release status: research prototype.** Not validated end-to-end on all supported platforms; real-genome and reference-database checks are ongoing. [See validation scope](docs/validation.md).
+**Release status: public beta / research prototype.** A real single-genome end-to-end run on Omarchy Linux has completed successfully; independent biological benchmark accuracy and all-platform compatibility remain unverified. [See validation scope](docs/validation.md).
 
 ## Quick start
 
@@ -75,6 +75,6 @@ Open the HTML report in your browser to explore the contig-level figures and gen
 
 **[Command reference](command_help.md)** · [Update tools/databases](docs/updating.md) · [Troubleshooting](docs/troubleshooting.md) · [Citations](CITATION.md) · [Scientific interpretation](docs/validation.md)
 
-**Version:** 0.3.0 (research prototype; beta validation ongoing) · **Author:** Afsan Sarwer · **License:** [MIT](LICENSE)
+**Version:** 0.3.0 (public beta; Linux real-genome execution confirmed; independent validation ongoing) · **Author:** Afsan Sarwer · **License:** [MIT](LICENSE)
 
 The workflow reports computational chromosome/plasmid predictions and preserves ambiguous contigs as **unresolved**. See [validation notes](docs/validation.md) for scientific interpretation and current testing scope.

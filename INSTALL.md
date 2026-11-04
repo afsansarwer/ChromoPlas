@@ -68,4 +68,4 @@ python -m pytest -q
 
 Prokka annotation is disabled by default to reduce runtime. For database and tool updates, follow [Updating ChromoPlas](docs/updating.md). For commands, see [Command reference](command_help.md).
 
-**Project status:** ChromoPlas v0.3.0; the Python tests and workflow dry-run have passed in CI. Cross-platform and biological end-to-end validation continues.
+**Project status:** ChromoPlas v0.3.0 public beta. Automated Python and synthetic orchestration tests have passed; one real-genome workflow completed on Omarchy Linux on 2026-11-05. Independently benchmarked biological accuracy and clean installation on every listed platform are not yet established.

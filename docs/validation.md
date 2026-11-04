@@ -1,6 +1,6 @@
 # ChromoPlas: validation and scientific limitations
 
-**Project stage: v0.3 research prototype.** The predecessor GenomeFlow v0.1 completed a 12-step run on one Linux bacterial assembly; the redesigned ChromoPlas workflow is not yet tested end to end. The new v0.3 CLI and the cross-platform installation guides have **not** been fully validated end to end on Debian, macOS or Windows/WSL2.
+**Project stage: v0.3 public beta / research prototype.** One end-to-end analysis with the current ChromoPlas CLI, real ABRicate and MOB-suite tools, and an assembled bacterial genome completed on Omarchy (Arch-based Linux) on **5 November 2026**. The Snakemake run completed **9/9 steps**, QC passed, and the HTML report rendered. This establishes successful execution of that particular configuration and input; it **does not independently establish** the accuracy of plasmid/chromosome predictions or transferability to every supported OS. The input assembly and its result tables have not been published as a reproducible benchmark. The cross-platform install guides have not been fully verified on all platforms.
 
 ## What ChromoPlas does not do
 
@@ -26,7 +26,7 @@
 
 Keep ChromoPlas repository commit/tag, input assembly accession and checksums, OS/architecture, full Conda environment export, Snakemake and external tool versions, ABRicate database names and version/date, MOB-suite database version, QC thresholds, full config, intermediate outputs and logs.
 
-The minimal GitHub Actions Python tests are **not full pipeline integration tests**. Validate interpretations independently before using results in a manuscript.
+GitHub Actions includes Python tests, workflow planning and full **synthetic tool-stub** orchestration tests. The local run on 5 November 2026 exercised real ABRicate and MOB-suite; neither class of test independently verifies biological classifications. Validate interpretations against well-characterized public reference assemblies before using results in scientific conclusions.
 
 ## Reporting safeguards added for the public beta
 
@@ -35,4 +35,4 @@ The minimal GitHub Actions Python tests are **not full pipeline integration test
 - `00_metadata/provenance.json` records input SHA-256 hashes, run settings, source commit when available, tool version checks and the ABRicate database listing.
 - `gene_localization_matrix.svg` is generated from each genome's own feature summary; images in the demo gallery are explicitly synthetic.
 
-**Still required for a validated release:** publicly documented complete analyses of real, independently characterized bacterial genomes; comparison to expected locations; clean installation on target systems. Automated tests alone are not a substitute.
+**Still required for a stable, independently validated release:** publish a reproducible worked analysis using a public genome accession and fixed reference versions; compare predicted gene/contig locations with independently characterized chromosome/plasmid truth; verify relevant edge cases and additional target OS installations. A completed real-genome run alone does not demonstrate benchmark accuracy.
