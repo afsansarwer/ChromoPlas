@@ -14,8 +14,8 @@ This package does NOT perform pangenome analysis, ANI, phylogeny or cross-isolat
 4. Run MOB-suite mob_recon on the same FASTA, retaining contig_report.txt, plasmid bins, and any mge.report.txt.
 5. Link ABRicate hits to MOB-suite assignments by ORIGINAL contig_id. A MOB-suite plasmid prediction requires a unique primary_cluster_id; chromosome requires an explicit chromosome call without a cluster. Missing, contradictory or unmatched assignments remain unresolved.
 6. Map MOB-suite MGE hits using contig_start and contig_end. Its mge_start and mge_end describe MGE query positions, not genomic contig positions.
-7. Summarize unique feature names as chromosome_only, plasmid_only, both, or unresolved. The both label requires evidence of at least one chromosomal and one plasmid-associated detection.
-8. Plot every contig, scaled by length within the assembly, with features shown at genomic coordinates, and write HTML and TSV results.
+7. Summarize unique feature names as chromosome_only, plasmid_only, both, or unresolved, with explicit additional categories chromosome_and_unresolved, plasmid_and_unresolved and both_and_unresolved when a gene also has matches on ambiguous contigs. The both designation requires at least one chromosomal and one plasmid-associated prediction.
+8. Plot every contig, scaled by length within the assembly, with features shown at genomic coordinates. Generate a per-sample gene localization evidence matrix from these data, then write HTML and TSV reports. Missing or unusable MGE coordinate reports are tracked as unavailable rather than conflated with biological zero.
 
 ## Main data contract
 
@@ -30,6 +30,10 @@ gene_localization_summary.tsv: unique feature name, class, localization, chromos
 Classification is predicted by MOB-suite and must not be treated as conclusive chromosome/plasmid localization. Complete plasmids are not guaranteed. MGE matches in MOB-suite 3.1+ are limited/repetitive-element evidence, not a comprehensive MGE screen. The FASTA quality metrics DO NOT measure contamination or completeness.
 
 Planned but not implemented: optional CheckM2, geNomad consensus, detailed context annotation, cross-tool confidence categories, interactive high-density plotting. No draft assembly contig is forced to chromosome by default.
+
+## Provenance and interpretation
+
+Each analysis captures its resolved configuration, input checksums, ChromoPlas commit when available, tool version checks and ABRicate database list in `00_metadata/`. MGE evidence-status values distinguish missing, unusable, partially mapped and coordinate-resolved reports. These snapshots do not verify the scientific accuracy of upstream tools.
 
 ## Testing
 
