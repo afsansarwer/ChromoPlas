@@ -46,14 +46,14 @@ def generate_report(results_dir, samples, plasmids_enabled=True):
             "contigs": quality.get("contigs", ""),
             "n50": quality.get("n50", ""),
             "gc": quality.get("gc", ""),
-            "chromosomal_contigs": sum(x["location"] == "chromosome" for x in contig_rows),
-            "plasmid_contigs": sum(x["location"] == "plasmid" for x in contig_rows),
-            "unresolved_contigs": sum(x["location"] == "unresolved" for x in contig_rows),
-            "arg_hits": sum(x["feature_class"] == "ARG" for x in feature_rows),
-            "vf_hits": sum(x["feature_class"] == "VF" for x in feature_rows),
+            "chromosomal_contigs": sum(x["location"] == "chromosome" for x in contig_rows) if passed else "NA",
+            "plasmid_contigs": sum(x["location"] == "plasmid" for x in contig_rows) if passed else "NA",
+            "unresolved_contigs": sum(x["location"] == "unresolved" for x in contig_rows) if passed else "NA",
+            "arg_hits": sum(x["feature_class"] == "ARG" for x in feature_rows) if passed else "NA",
+            "vf_hits": sum(x["feature_class"] == "VF" for x in feature_rows) if passed else "NA",
             "mge_hits": mge_count if mge_status in {"coordinate_report_available", "coordinate_rows_partly_mapped"} else "NA",
             "mge_evidence_status": mge_status,
-            "genes_in_both": sum(x["localization"] in {"both", "both_and_unresolved"} for x in genes),
+            "genes_in_both": sum(x["localization"] in {"both", "both_and_unresolved"} for x in genes) if passed else "NA",
         }
         rows.append(rec)
         name = escape(sample)
@@ -85,8 +85,18 @@ def generate_report(results_dir, samples, plasmids_enabled=True):
                          f'Not a biological absence call.</p></section>')
     out = results_dir / "07_reports"
     write_tsv(out / "master_summary.tsv", rows, list(rows[0]) if rows else ["sample"])
+    no_pass_banner = ""
+    if rows and not any(row["qc_status"] == "PASS" for row in rows):
+        no_pass_banner = (
+            '<section role="alert" class="warning"><h2>No genomes passed assembly QC</h2>'
+            '<p>All input assemblies were excluded from ARG/VF screening, plasmid prediction '
+            'and figure generation. No gene absences can be concluded from this report. '
+            'Review <code>02_quality/quality_summary.tsv</code> and adjust QC thresholds '
+            'only if scientifically appropriate for the input assembly.</p></section>'
+        )
     qc_table = "".join(
         f'<tr><td>{escape(str(rec["sample"]))}</td><td>{escape(str(rec["qc_status"]))}</td>'
+        f'<td>{escape(str(rec["qc_reasons"]))}</td>'
         f'<td>{rec["arg_hits"]}</td><td>{rec["vf_hits"]}</td><td>{rec["mge_hits"]}</td>'
         f'<td>{rec["plasmid_contigs"]}</td><td>{rec["unresolved_contigs"]}</td></tr>'
         for rec in rows)
@@ -97,9 +107,11 @@ h1{{color:#253e60}}section{{border:1px solid #d6dce2;border-radius:12px;padding:
 table{{border-collapse:collapse;width:100%}}td,th{{border:1px solid #ced8e4;padding:8px;text-align:left}}
 th{{background:#eef2f8}}img{{max-width:100%;height:auto;border:1px solid #e2e7ec}}
 small{{color:#657487}}.note{{background:#f7f7f7;padding:14px;border-left:4px solid #d69c48}}
+.warning{{background:#fff8ec;border:2px solid #d69c48}}
 </style></head><body><h1>ChromoPlas — bacterial gene localization</h1>
 <p class="note">Predicted chromosome/plasmid assignment is not experimental confirmation. Hits are dependent on databases and thresholds. Basic FASTA QC does not establish completeness or contamination. QC failures are not gene absences.</p>
-<table><thead><tr><th>Isolate</th><th>QC</th><th>ARG hits</th><th>VF hits</th><th>MGE hits (NA = no usable coordinate evidence)</th><th>Plasmid contigs</th><th>Unresolved contigs</th></tr></thead>
+{no_pass_banner}
+<table><thead><tr><th>Isolate</th><th>QC</th><th>QC reasons</th><th>ARG hits</th><th>VF hits</th><th>MGE hits (NA = no usable coordinate evidence)</th><th>Plasmid contigs</th><th>Unresolved contigs</th></tr></thead>
 <tbody>{qc_table}</tbody></table>
 {''.join(cards)}</body></html>"""
     (out / "report.html").write_text(page, encoding="utf-8")

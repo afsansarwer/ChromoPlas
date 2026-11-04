@@ -64,6 +64,8 @@ xdg-open ~/chromoplas-results/07_reports/report.html
 
 **WSL tip:** Keep genome input and output under your Linux home directory (`~/`) for faster I/O than `/mnt/c/` or `/mnt/e/`; your Git clone can remain on Windows storage. Inputs are assembled FASTA files (`.fa`, `.fna`, `.fasta`, optionally gzipped), **not FASTQ**.
 
+**No figures after a run?** If you only see `00_metadata/`, `02_quality/` and `07_reports/`, check `02_quality/quality_summary.tsv`. Your assembly may have failed QC, so gene screening and figures were skipped. See [troubleshooting](docs/troubleshooting.md#no-svg-maps-or-plasmidabricate-folders-after-the-run).
+
 ## What does ChromoPlas produce?
 
 | Stage | Tool | Output |

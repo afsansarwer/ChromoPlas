@@ -10,7 +10,7 @@ Start with [Installation and verification](../INSTALL.md). Most failures fall in
 | **snakemake / abricate / mob_recon missing** | **command -v TOOL** | Run `bash INSTALL.sh` inside the clone, or use Conda to install missing packages into `chromoplas` |
 | **No FASTA assemblies found** | Confirm input path/extension | Provide assembled .fna/.fa/.fasta (or .gz), not FASTQ |
 | **Database error** | **abricate --list** | Install/refresh ABRicate databases and check MOB-suite reference data |
-| **QC FAIL** | **02_quality/quality_summary.tsv** | Review genome assembly statistics and species-appropriate limits |
+| **QC FAIL / only 00_metadata, 02_quality, 07_reports** | **02_quality/quality_summary.tsv** | All samples may have been filtered before gene screening; inspect the `status` and `reasons` columns, then choose scientifically justified QC thresholds |
 
 ## Omarchy / Arch: persistent Conda activation fix
 
@@ -58,3 +58,30 @@ A successful chromoplas doctor check is an environment check, not a guarantee th
 If Snakemake stops, inspect the console and **results/.snakemake/log/**, fix the cause, and rerun with the **same output and input**. A first dry run can display only the QC-checkpoint jobs; dependent jobs expand after that checkpoint completes.
 
 For support, [open an issue](https://github.com/afsansarwer/ChromoPlas/issues) including OS, CPU architecture, the command you ran, the relevant error, chromoplas version, and the external tool/database versions. Do not upload sensitive research data.
+
+## No SVG maps or plasmid/ABRicate folders after the run
+
+If the output contains only `00_metadata/`, `02_quality/`, and `07_reports/`, first check:
+
+```bash
+cat /path/to/results/02_quality/quality_summary.tsv
+cat /path/to/results/07_reports/master_summary.tsv
+cat /path/to/results/00_metadata/hq_samples.txt
+```
+
+ChromoPlas screens only genomes that pass its **basic assembly QC**. By default, assemblies with more than **500 contigs** or more than **15,000,000 bp** fail the broad gates; these thresholds are not species-specific. If every genome fails QC, no gene screening, plasmid prediction or SVG is created. This is **not** evidence of absent genes. From the updated CLI, this case prints a clear explanation and exits with status **2**, although the QC-only HTML report is retained. Excluded specimens have `NA` counts rather than biological zeroes.
+
+Adjust thresholds **only after inspecting the assembly's properties**. For an exploratory run where higher fragmentation is expected, create a YAML containing just the changed threshold, e.g.:
+
+```yaml
+quality:
+  max_contigs: 1000
+```
+
+and rerun using a **new output directory**:
+
+```bash
+chromoplas /path/to/assembly.fna -o ~/chromoplas-relaxed-qc -t 4 --config /path/to/custom.yaml
+```
+
+Choose the threshold for the biological context; relaxing QC is not itself an improvement to assembly quality. Output tables and figures describe computational predictions only.
