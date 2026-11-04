@@ -9,6 +9,7 @@ from pathlib import Path
 from chromoplas.qc import metrics, assess, write_tsv
 from chromoplas.localization import localize
 from chromoplas.visualization import architecture_svg
+from chromoplas.matrix import gene_localization_matrix
 from chromoplas.report import generate_report
 
 SAMPLES = json.loads(Path(config["_manifest"]).read_text())
@@ -149,12 +150,13 @@ rule localize_sample:
         sample = wildcards.sample
         folder = Path(f"06_localization/{sample}")
         folder.mkdir(parents=True, exist_ok=True)
-        contigs, features, _ = localize(
+        contigs, features, gene_rows = localize(
             sample, f"01_genomes/{sample}.fna",
             "04_abricate", f"05_plasmids/{sample}", folder,
             DB_CLASSES, plasmids_enabled=PLASMIDS,
         )
         architecture_svg(sample, contigs, features, folder / "architecture.svg")
+        gene_localization_matrix(sample, gene_rows, folder / "gene_localization_matrix.svg")
 
 
 rule generate_report:
@@ -163,4 +165,4 @@ rule generate_report:
     output:
         "07_reports/report.html"
     run:
-        generate_report(".", IDS)
+        generate_report(".", IDS, plasmids_enabled=PLASMIDS)
