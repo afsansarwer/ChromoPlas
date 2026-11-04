@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased — public beta hardening
+## v0.3.0 — public beta candidate (November 2026)
+
+- First documented complete current-version analysis of a real bacterial assembly on Omarchy Linux (2026-11-05); 9/9 workflow steps completed and the HTML report rendered. This is **execution evidence**, not independent accuracy benchmarking.
+- Release notes and publication communication now distinguish completed real execution from pending reference validation.
+
+### Public-beta hardening
 
 - Corrected GitHub repository URLs after the ChromoPlas rename.
 - Made `chromoplas doctor` fail when required ABRicate databases are missing.
