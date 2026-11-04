@@ -92,3 +92,29 @@ def test_unmappable_mge_rows_are_not_called_zero(tmp_path):
     rec = read_tsv(root / "07_reports/master_summary.tsv")[0]
     assert rec["mge_evidence_status"] == "coordinate_rows_unmapped"
     assert rec["mge_hits"] == "NA"
+
+
+def test_partially_mapped_mge_rows_remain_visible(tmp_path):
+    from chromoplas.qc import write_tsv, read_tsv
+    from chromoplas.report import generate_report
+    root = tmp_path / "results"
+    write_tsv(root / "02_quality/quality_summary.tsv", [
+        {"sample": "s1", "status": "PASS", "reasons": "",
+         "genome_size": 1500, "contigs": 1, "n50": 1500, "gc": 50}
+    ], ["sample", "status", "reasons", "genome_size", "contigs", "n50", "gc"])
+    mge = root / "05_plasmids/s1/mge.report.txt"
+    mge.parent.mkdir(parents=True)
+    mge.write_text(
+        "contig_id\\tcontig_start\\tcontig_end\\tmge_id\\n"
+        "ctg\\t10\\t30\\tIS26\\n"
+        "unknown\\t10\\t30\\tIS3\\n"
+    )
+    local = root / "06_localization/s1"
+    local.mkdir(parents=True)
+    write_tsv(local / "feature_localization.tsv", [
+        {"feature_class": "MGE", "location": "plasmid"}
+    ], ["feature_class", "location"])
+    generate_report(root, ["s1"])
+    rec = read_tsv(root / "07_reports/master_summary.tsv")[0]
+    assert rec["mge_evidence_status"] == "coordinate_rows_partly_mapped"
+    assert rec["mge_hits"] == "1"
