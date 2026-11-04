@@ -45,10 +45,18 @@ def doctor():
         proc = subprocess.run(["abricate", "--list"], capture_output=True, text=True,
                               check=True)
         typer.echo(proc.stdout)
-        lower = proc.stdout.lower()
-        for db in ("resfinder", "vfdb", "plasmidfinder"):
-            if db not in lower:
-                typer.echo(f"WARNING: ABRicate database {db} not listed", err=True)
+        installed = {
+            line.split()[0].lower()
+            for line in proc.stdout.splitlines()
+            if line.strip() and not line.lower().startswith("database")
+        }
+        missing_dbs = {"resfinder", "vfdb", "plasmidfinder"} - installed
+        if missing_dbs:
+            typer.echo(
+                "Missing required ABRicate databases: " + ", ".join(sorted(missing_dbs)),
+                err=True,
+            )
+            raise typer.Exit(1)
     except (OSError, subprocess.CalledProcessError) as exc:
         typer.echo(f"ABRicate database inspection failed: {exc}", err=True)
         raise typer.Exit(1)
@@ -91,6 +99,8 @@ def run(
     cfg["_manifest"] = str(manifest)
     effective = meta / "resolved_config.yaml"
     effective.write_text(yaml.safe_dump(cfg, sort_keys=False))
+    from .provenance import create_provenance
+    create_provenance(meta / "provenance.json", samples, cfg)
     snakefile = files("chromoplas").joinpath("workflow/Snakefile")
     cmd = ["snakemake", "--snakefile", str(snakefile), "--configfile", str(effective),
            "--directory", str(out), "--cores", str(cores), "--printshellcmds",
