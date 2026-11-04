@@ -5,7 +5,7 @@ from pathlib import Path
 from .qc import read_tsv, write_tsv
 
 
-def _mge_evidence_status(results_dir, sample, plasmids_enabled):
+def _mge_evidence_status(results_dir, sample, plasmids_enabled, mapped_hits):
     """Do not interpret absent or incompatible MGE evidence as zero hits."""
     if not plasmids_enabled:
         return "not_run"
@@ -15,8 +15,11 @@ def _mge_evidence_status(results_dir, sample, plasmids_enabled):
     with path.open(newline="") as handle:
         reader = csv.DictReader(handle, delimiter="\t")
         columns = set(reader.fieldnames or ())
+        reported_rows = list(reader)
     if not {"contig_id", "contig_start", "contig_end"}.issubset(columns):
         return "coordinates_unavailable"
+    if reported_rows and mapped_hits == 0:
+        return "coordinate_rows_unmapped"
     return "coordinate_report_available"
 
 
@@ -32,8 +35,8 @@ def generate_report(results_dir, samples, plasmids_enabled=True):
         feature_rows = read_tsv(local / "feature_localization.tsv") if passed else []
         contig_rows = read_tsv(local / "contig_summary.tsv") if passed else []
         genes = read_tsv(local / "gene_localization_summary.tsv") if passed else []
-        mge_status = _mge_evidence_status(results_dir, sample, plasmids_enabled) if passed else "qc_excluded"
         mge_count = sum(x["feature_class"] == "MGE" for x in feature_rows)
+        mge_status = _mge_evidence_status(results_dir, sample, plasmids_enabled, mge_count) if passed else "qc_excluded"
         rec = {
             "sample": sample, "qc_status": quality.get("status", "UNKNOWN"),
             "qc_reasons": quality.get("reasons", ""),
