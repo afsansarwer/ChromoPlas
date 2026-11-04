@@ -31,13 +31,13 @@ macOS usually uses **zsh**. You may optionally run **conda init zsh** and open a
 ~~~bash
 git clone https://github.com/afsansarwer/ChromoPlas.git
 cd ChromoPlas
-mamba create -y -n chromoplas -c conda-forge -c bioconda \
+conda create -y -n chromoplas -c conda-forge -c bioconda \
   python=3.11 snakemake abricate mob_suite typer pyyaml pip pytest
 conda activate chromoplas
 python -m pip install --no-deps -e .
 ~~~
 
-If Mamba cannot resolve dependencies on Apple Silicon, use a Linux environment or report your architecture and the package-solver error in a GitHub issue.
+If Conda cannot resolve dependencies on Apple Silicon, use a Linux environment or report your architecture and the package-solver error in a GitHub issue.
 
 ## 4. Verify
 

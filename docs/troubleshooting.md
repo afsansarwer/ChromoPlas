@@ -7,7 +7,7 @@ Start with [Installation and verification](../INSTALL.md). Most failures fall in
 | **bash: hash: hashing disabled** | Bash command hashing: **set -o** | [Permanent Omarchy fix](install-omarchy.md) |
 | **mamba shell not initialized** | Confirm whether you use Bash or Zsh | For Bash: **source ~/miniforge3/etc/profile.d/conda.sh** then **conda activate chromoplas** |
 | **chromoplas: command not found** | **echo "$CONDA_DEFAULT_ENV"** | Activate chromoplas, then install the package from the repository root |
-| **snakemake / abricate / mob_recon missing** | **command -v TOOL** | Install the tool in the chromoplas environment with Mamba |
+| **snakemake / abricate / mob_recon missing** | **command -v TOOL** | Run `bash INSTALL.sh` inside the clone, or use Conda to install missing packages into `chromoplas` |
 | **No FASTA assemblies found** | Confirm input path/extension | Provide assembled .fna/.fa/.fasta (or .gz), not FASTQ |
 | **Database error** | **abricate --list** | Install/refresh ABRicate databases and check MOB-suite reference data |
 | **QC FAIL** | **02_quality/quality_summary.tsv** | Review genome assembly statistics and species-appropriate limits |

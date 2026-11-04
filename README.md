@@ -1,80 +1,95 @@
 # ChromoPlas
 
-**Bacterial genome screening and chromosome–plasmid gene localization, from assembled FASTA to interpretable figures.**
+**From assembled bacterial FASTA to antimicrobial-resistance screening and chromosome–plasmid localization figures.**
 
-ChromoPlas is a lightweight Python based pipeline that screens assembled bacterial genomes for antimicrobial resistance genes (ARGs), virulence factors (VFs), plasmid replicon markers, and available mobile genetic element (MGE) matches. It maps features to their **original contigs and coordinates**, predicts chromosome/plasmid association using MOB-suite, and generates a whole-assembly SVG plus HTML and TSV reports.
+ChromoPlas is an open-source Python/Snakemake workflow using ABRicate and MOB-suite to identify ARG/VF/replicon hits, map hits to original contig coordinates, predict their chromosome/plasmid association, and produce SVG, TSV and HTML reports.
 
 ![Python tests](https://github.com/afsansarwer/ChromoPlas/actions/workflows/tests.yml/badge.svg)
 
-**Release status: public beta / research prototype.** A real single-genome end-to-end run on Omarchy Linux has completed successfully; independent biological benchmark accuracy and all-platform compatibility remain unverified. [See validation scope](docs/validation.md).
+## 1. Install on Ubuntu / Debian / WSL2 (beginner-friendly)
 
-## Quick start
+**Requirements:** Linux x86_64, Git, an internet connection and free storage for Conda tools and reference databases. This runs **inside Ubuntu/WSL**, not Windows PowerShell; Bash and Zsh users can both execute it. Conda does **not** need to be installed beforehand.
 
-~~~bash
-chromoplas genome.fna -o results/ -t 4
-chromoplas genomes/ -o batch_results/ -t 8
+Open your Linux terminal and copy these **three commands**:
+
+
+```bash
+git clone https://github.com/afsansarwer/ChromoPlas.git
+cd ChromoPlas
+bash INSTALL.sh
+```
+
+The installer finds your existing Miniconda/Miniforge (or installs Miniforge if missing), creates a separate `chromoplas` Conda environment, installs Snakemake, ABRicate, MOB-suite, the ChromoPlas CLI, initializes required databases, and runs installation checks. **It does not install into `(base)`.** Database downloads may be large. If an operation fails, the script stops instead of reporting success.
+
+**Already cloned?** Run only `bash INSTALL.sh` from inside that repository. Running `git clone` alone is not installation; `chromoplas: command not found` before setup is expected.
+
+## 2. Activate and verify
+
+After installation completes, run in the same Linux/WSL terminal:
+
+
+```bash
+conda activate chromoplas
+chromoplas --help
 chromoplas doctor
-~~~
+```
 
-**Inputs:** assembled .fna / .fa / .fasta files (plain or .gz). Each isolate is analyzed independently; pangenome and across-isolate comparisons are not required.
+A new terminal starts a new shell session, so reactivate it with `conda activate chromoplas`. If activation is unavailable, follow the path printed by the installer or see [troubleshooting](docs/troubleshooting.md).
 
-## Workflow
+## 3. Try it and analyze your genomes
 
-| Stage | Software | Result |
+**Check a bundled test input without running the full analysis:**
+
+
+```bash
+chromoplas examples/genomes/test_isolate.fna -o ~/chromoplas-preview --dry-run
+```
+
+**Run on your own assembled bacterial genome** (replace the input path with your actual FASTA):
+
+
+```bash
+chromoplas ~/genomes/genome.fna -o ~/chromoplas-results -t 4
+
+# Analyze a directory of assembled genomes independently
+chromoplas ~/genomes/ -o ~/chromoplas-batch -t 8
+```
+
+**Open your results:** `~/chromoplas-results/07_reports/report.html` (open from your file manager or browser). On desktop Linux, you can try:
+
+
+```bash
+xdg-open ~/chromoplas-results/07_reports/report.html
+```
+
+**WSL tip:** Keep genome input and output under your Linux home directory (`~/`) for faster I/O than `/mnt/c/` or `/mnt/e/`; your Git clone can remain on Windows storage. Inputs are assembled FASTA files (`.fa`, `.fna`, `.fasta`, optionally gzipped), **not FASTQ**.
+
+## What does ChromoPlas produce?
+
+| Stage | Tool | Output |
 | --- | --- | --- |
-| Assembly QC | ChromoPlas | Genome length, contigs, N50, GC%, pass/fail |
-| Gene screening | ABRicate (ResFinder, VFDB, PlasmidFinder) | ARG, VF and replicon matches |
-| Contig classification | MOB-suite | Chromosome, plasmid group or unresolved |
-| MGE localization | Available MOB-suite MGE report | Coordinate-linked MGE matches |
-| Genome map | ChromoPlas | All-contig SVG and per-isolate HTML/TSV |
+| QC | ChromoPlas | Contig count, genome size, N50, GC%, PASS/FAIL |
+| Gene detection | ABRicate | ResFinder ARGs, VFDB VFs, PlasmidFinder replicons |
+| Contig assignment | MOB-suite | Predicted chromosome, plasmid or unresolved |
+| MGE evidence | Available MOB-suite reports | Coordinate-resolved matches when available |
+| Visualization | ChromoPlas | Architecture SVG, gene-localization matrix SVG, HTML report |
 
-**Figure:** every assembly contig, grouped by predicted genomic compartment, with color-coded gene hits at contig coordinates. Gene summaries distinguish detections on chromosomes, plasmids, both, or unresolved contigs. Optional Prokka annotation is available via YAML.
+Results include per-sample `06_localization/<sample>/architecture.svg`, `gene_localization_matrix.svg`, `feature_localization.tsv` and `07_reports/report.html`. Every genome is processed independently; ChromoPlas is **not** a pangenome analysis tool.
 
-## Example visualizations
+## Example figures (synthetic demonstration, not real isolates)
 
-The following images are **synthetic demonstrations** of the report format, not biological results.
+![Synthetic chromosome-plasmid assembly architecture](examples/demo/architecture.svg)
 
-![Assembly architecture with contigs and mapped ARG/VF/MGE features](examples/demo/architecture.svg)
+![Synthetic gene localization summary](examples/demo/localization-summary.svg)
 
-*Assembly overview: original chromosome-associated, plasmid-associated and unresolved contigs, with feature positions.*
+[Demo gallery](docs/demo-gallery.md)
 
-![ARG/VF/MGE localization summary by genome compartment](examples/demo/localization-summary.svg)
+## Detailed guides
 
-*Synthetic illustration; real runs now generate a per-genome gene-evidence matrix at `06_localization/<sample>/gene_localization_matrix.svg`.*
+- **[Installation and troubleshooting](INSTALL.md)**, including a manual Conda setup.
+- **[Debian/Ubuntu and WSL2 installation](docs/install-debian.md)** and [Windows/WSL2 setup](docs/install-windows-powershell.md).
+- [Omarchy/Arch setup](docs/install-omarchy.md) · [macOS (experimental)](docs/install-macos.md).
+- [Beginner's guide](docs/beginners-guide.md) · [Command reference](command_help.md) · [Update tools/databases](docs/updating.md).
+- [Scientific validation and limitations](docs/validation.md) · [Contributing](CONTRIBUTING.md) · [Citations](CITATION.md) · [MIT License](LICENSE).
 
-[Explore the demo gallery](docs/demo-gallery.md) · [Follow the beginner tutorial](docs/beginners-guide.md)
-
-## Output highlights
-
-~~~text
-results/
-├── 00_metadata/                         # Inputs, config, provenance.json
-├── 01_genomes/                          # Working assemblies
-├── 02_quality/quality_summary.tsv
-├── 03_annotation/                       # Optional; only if enabled
-├── 04_abricate/                         # Gene screens
-├── 05_plasmids/                         # MOB-suite results
-├── 06_localization/<sample>/
-│   ├── contig_summary.tsv
-│   ├── feature_localization.tsv
-│   ├── gene_localization_summary.tsv
-│   ├── architecture.svg
-│   └── gene_localization_matrix.svg
-└── 07_reports/
-    ├── report.html
-    └── master_summary.tsv
-~~~
-
-Open the HTML report in your browser to explore the contig-level figures and gene summaries. `master_summary.tsv` includes `mge_evidence_status`; **NA means coordinate evidence was unavailable, not that MGEs were biologically absent**. Unresolved gene detections remain explicit in the localization labels.
-
-## Install and use
-
-**[Beginner's step-by-step guide](docs/beginners-guide.md)** · **[Installation overview](INSTALL.md)** · [Debian/Ubuntu](docs/install-debian.md) · [Omarchy/Arch (Conda fix)](docs/install-omarchy.md) · [macOS](docs/install-macos.md) · [Windows/WSL2 PowerShell](docs/install-windows-powershell.md)
-
-**[Release and validation checklist](docs/release-checklist.md)** · [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
-
-**[Command reference](command_help.md)** · [Update tools/databases](docs/updating.md) · [Troubleshooting](docs/troubleshooting.md) · [Citations](CITATION.md) · [Scientific interpretation](docs/validation.md)
-
-**Version:** 0.3.0 (public beta; Linux real-genome execution confirmed; independent validation ongoing) · **Author:** Afsan Sarwer · **License:** [MIT](LICENSE)
-
-The workflow reports computational chromosome/plasmid predictions and preserves ambiguous contigs as **unresolved**. See [validation notes](docs/validation.md) for scientific interpretation and current testing scope.
+**Release:** v0.3.0 public beta / research prototype. Successful real-genome execution has been demonstrated on Omarchy Linux, but independent plasmid-location benchmarking and full cross-platform validation are still pending. Gene and contig locations are computational predictions, not experimental or clinical confirmation.
