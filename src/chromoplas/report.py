@@ -20,6 +20,8 @@ def _mge_evidence_status(results_dir, sample, plasmids_enabled, mapped_hits):
         return "coordinates_unavailable"
     if reported_rows and mapped_hits == 0:
         return "coordinate_rows_unmapped"
+    if len(reported_rows) > mapped_hits:
+        return "coordinate_rows_partly_mapped"
     return "coordinate_report_available"
 
 
@@ -49,9 +51,9 @@ def generate_report(results_dir, samples, plasmids_enabled=True):
             "unresolved_contigs": sum(x["location"] == "unresolved" for x in contig_rows),
             "arg_hits": sum(x["feature_class"] == "ARG" for x in feature_rows),
             "vf_hits": sum(x["feature_class"] == "VF" for x in feature_rows),
-            "mge_hits": mge_count if mge_status == "coordinate_report_available" else "NA",
+            "mge_hits": mge_count if mge_status in {"coordinate_report_available", "coordinate_rows_partly_mapped"} else "NA",
             "mge_evidence_status": mge_status,
-            "genes_in_both": sum(x["localization"] == "both" for x in genes),
+            "genes_in_both": sum(x["localization"] in {"both", "both_and_unresolved"} for x in genes),
         }
         rows.append(rec)
         name = escape(sample)
