@@ -2,7 +2,7 @@
 
 **Bacterial genome screening and chromosome–plasmid gene localization, from assembled FASTA to interpretable figures.**
 
-ChromoPlas is a lightweight Python/Snakemake pipeline that screens assembled bacterial genomes for antimicrobial resistance genes (ARGs), virulence factors (VFs), plasmid replicon markers and available mobile genetic element (MGE) matches. It maps features to their **original contigs and coordinates**, predicts chromosome/plasmid association using MOB-suite, and generates a whole-assembly SVG plus HTML and TSV reports.
+ChromoPlas is a lightweight Python based pipeline that screens assembled bacterial genomes for antimicrobial resistance genes (ARGs), virulence factors (VFs), plasmid replicon markers, and available mobile genetic element (MGE) matches. It maps features to their **original contigs and coordinates**, predicts chromosome/plasmid association using MOB-suite, and generates a whole-assembly SVG plus HTML and TSV reports.
 
 ![Python tests](https://github.com/afsansarwer/genomeflow/actions/workflows/tests.yml/badge.svg)
 
