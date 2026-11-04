@@ -57,4 +57,4 @@ A successful chromoplas doctor check is an environment check, not a guarantee th
 
 If Snakemake stops, inspect the console and **results/.snakemake/log/**, fix the cause, and rerun with the **same output and input**. A first dry run can display only the QC-checkpoint jobs; dependent jobs expand after that checkpoint completes.
 
-For support, [open an issue](https://github.com/afsansarwer/genomeflow/issues) including OS, CPU architecture, the command you ran, the relevant error, chromoplas version, and the external tool/database versions. Do not upload sensitive research data.
+For support, [open an issue](https://github.com/afsansarwer/ChromoPlas/issues) including OS, CPU architecture, the command you ran, the relevant error, chromoplas version, and the external tool/database versions. Do not upload sensitive research data.
