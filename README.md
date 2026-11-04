@@ -19,9 +19,9 @@ cd ChromoPlas
 bash INSTALL.sh
 ```
 
-The installer finds your existing Miniconda/Miniforge (or installs Miniforge if missing), creates a separate \`chromoplas\` Conda environment, installs Snakemake, ABRicate, MOB-suite, the ChromoPlas CLI, initializes required databases, and runs installation checks. **It does not install into \`(base)\`.** Database downloads may be large. If an operation fails, the script stops instead of reporting success.
+The installer finds your existing Miniconda/Miniforge (or installs Miniforge if missing), creates a separate `chromoplas` Conda environment, installs Snakemake, ABRicate, MOB-suite, the ChromoPlas CLI, initializes required databases, and runs installation checks. **It does not install into `(base)`.** Database downloads may be large. If an operation fails, the script stops instead of reporting success.
 
-**Already cloned?** Run only \`bash INSTALL.sh\` from inside that repository. Running \`git clone\` alone is not installation; \`chromoplas: command not found\` before setup is expected.
+**Already cloned?** Run only `bash INSTALL.sh` from inside that repository. Running `git clone` alone is not installation; `chromoplas: command not found` before setup is expected.
 
 ## 2. Activate and verify
 
@@ -34,7 +34,7 @@ chromoplas --help
 chromoplas doctor
 ```
 
-A new terminal starts a new shell session, so reactivate it with \`conda activate chromoplas\`. If activation is unavailable, follow the path printed by the installer or see [troubleshooting](docs/troubleshooting.md).
+A new terminal starts a new shell session, so reactivate it with `conda activate chromoplas`. If activation is unavailable, follow the path printed by the installer or see [troubleshooting](docs/troubleshooting.md).
 
 ## 3. Try it and analyze your genomes
 
@@ -55,14 +55,14 @@ chromoplas ~/genomes/genome.fna -o ~/chromoplas-results -t 4
 chromoplas ~/genomes/ -o ~/chromoplas-batch -t 8
 ```
 
-**Open your results:** \`~/chromoplas-results/07_reports/report.html\` (open from your file manager or browser). On desktop Linux, you can try:
+**Open your results:** `~/chromoplas-results/07_reports/report.html` (open from your file manager or browser). On desktop Linux, you can try:
 
 
 ```bash
 xdg-open ~/chromoplas-results/07_reports/report.html
 ```
 
-**WSL tip:** Keep genome input and output under your Linux home directory (\`~/\`) for faster I/O than \`/mnt/c/\` or \`/mnt/e/\`; your Git clone can remain on Windows storage. Inputs are assembled FASTA files (\`.fa\`, \`.fna\`, \`.fasta\`, optionally gzipped), **not FASTQ**.
+**WSL tip:** Keep genome input and output under your Linux home directory (`~/`) for faster I/O than `/mnt/c/` or `/mnt/e/`; your Git clone can remain on Windows storage. Inputs are assembled FASTA files (`.fa`, `.fna`, `.fasta`, optionally gzipped), **not FASTQ**.
 
 ## What does ChromoPlas produce?
 
@@ -74,7 +74,7 @@ xdg-open ~/chromoplas-results/07_reports/report.html
 | MGE evidence | Available MOB-suite reports | Coordinate-resolved matches when available |
 | Visualization | ChromoPlas | Architecture SVG, gene-localization matrix SVG, HTML report |
 
-Results include per-sample \`06_localization/<sample>/architecture.svg\`, \`gene_localization_matrix.svg\`, \`feature_localization.tsv\` and \`07_reports/report.html\`. Every genome is processed independently; ChromoPlas is **not** a pangenome analysis tool.
+Results include per-sample `06_localization/<sample>/architecture.svg`, `gene_localization_matrix.svg`, `feature_localization.tsv` and `07_reports/report.html`. Every genome is processed independently; ChromoPlas is **not** a pangenome analysis tool.
 
 ## Example figures (synthetic demonstration, not real isolates)
 

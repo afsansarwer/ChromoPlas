@@ -15,7 +15,7 @@ conda activate chromoplas
 chromoplas doctor
 ```
 
-Already cloned? Run \`bash INSTALL.sh\` from that directory. You do **not** need Mamba or a preinstalled Conda: the installer handles these dependencies. It never installs ChromoPlas into \`(base)\`. For Omarchy/Arch and macOS, use the manual [installation guide](../INSTALL.md).
+Already cloned? Run `bash INSTALL.sh` from that directory. You do **not** need Mamba or a preinstalled Conda: the installer handles these dependencies. It never installs ChromoPlas into `(base)`. For Omarchy/Arch and macOS, use the manual [installation guide](../INSTALL.md).
 
 ## 1. Understand the installation
 
