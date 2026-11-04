@@ -54,3 +54,41 @@ def test_provenance_hashes_inputs_and_captures_versions(tmp_path):
     assert info["inputs"]["sample"]["sha256"] == __import__("hashlib").sha256(fasta.read_bytes()).hexdigest()
     assert info["chromoplas_git_commit"] is None
     assert "tools" in info
+
+
+def test_missing_mge_report_is_unknown_not_zero(tmp_path):
+    from chromoplas.qc import write_tsv, read_tsv
+    from chromoplas.report import generate_report
+    root = tmp_path / "results"
+    write_tsv(root / "02_quality/quality_summary.tsv", [
+        {"sample": "s1", "status": "PASS", "reasons": "",
+         "genome_size": 1500, "contigs": 1, "n50": 1500, "gc": 50}
+    ], ["sample", "status", "reasons", "genome_size", "contigs", "n50", "gc"])
+    generate_report(root, ["s1"])
+    record = read_tsv(root / "07_reports/master_summary.tsv")[0]
+    assert record["mge_evidence_status"] == "not_reported"
+    assert record["mge_hits"] == "NA"
+    generate_report(root, ["s1"], plasmids_enabled=False)
+    record = read_tsv(root / "07_reports/master_summary.tsv")[0]
+    assert record["mge_evidence_status"] == "not_run"
+    assert record["mge_hits"] == "NA"
+
+
+def test_unmappable_mge_rows_are_not_called_zero(tmp_path):
+    from chromoplas.qc import write_tsv, read_tsv
+    from chromoplas.report import generate_report
+    root = tmp_path / "results"
+    write_tsv(root / "02_quality/quality_summary.tsv", [
+        {"sample": "s1", "status": "PASS", "reasons": "",
+         "genome_size": 1500, "contigs": 1, "n50": 1500, "gc": 50}
+    ], ["sample", "status", "reasons", "genome_size", "contigs", "n50", "gc"])
+    mge = root / "05_plasmids/s1/mge.report.txt"
+    mge.parent.mkdir(parents=True)
+    mge.write_text(
+        "contig_id\\tcontig_start\\tcontig_end\\tmge_id\\n"
+        "missing_contig\\t10\\t30\\tIS26\\n"
+    )
+    generate_report(root, ["s1"])
+    rec = read_tsv(root / "07_reports/master_summary.tsv")[0]
+    assert rec["mge_evidence_status"] == "coordinate_rows_unmapped"
+    assert rec["mge_hits"] == "NA"
