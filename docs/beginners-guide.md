@@ -49,7 +49,7 @@ chromoplas doctor
 If the environment activates but `chromoplas` is missing, navigate to your cloned repository (the directory containing `pyproject.toml`):
 
 ```bash
-cd ~/genomeflow  # or your actual clone directory
+cd ~/ChromoPlas  # or your actual clone directory
 git pull --ff-only
 python -m pip install --no-deps -e .
 bash scripts/check-install.sh
@@ -95,7 +95,7 @@ The [demo gallery](demo-gallery.md) illustrates the output layout with **synthet
 | `03_annotation/` | Optional Prokka output, **only when enabled** |
 | `04_abricate/` | ARG, VF, and replicon screening |
 | `05_plasmids/` | MOB-suite contig/plasmid predictions |
-| `06_localization/<sample>/` | Contig/gene localization TSVs and `architecture.svg` |
+| `06_localization/<sample>/` | Contig/gene localization TSVs, `architecture.svg`, and `gene_localization_matrix.svg` |
 | `07_reports/` | `report.html` and `master_summary.tsv` |
 
 The chromosome/plasmid/unresolved calls are computational predictions. Unresolved assignments remain visible.
