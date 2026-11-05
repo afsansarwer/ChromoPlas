@@ -15,6 +15,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: windows-desktop-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   windows-installer:
     runs-on: windows-2022
@@ -27,7 +31,13 @@ jobs:
           architecture: x64
       - name: Install Inno Setup compiler
         shell: pwsh
-        run: choco install innosetup --yes --no-progress --version=6.4.3
+        run: |
+          $compiler = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $compiler)) {
+            choco install innosetup --yes --no-progress --version=6.7.1
+            if ($LASTEXITCODE -ne 0) { throw 'Could not install Inno Setup' }
+          }
+          & $compiler /?
       - name: Build and smoke-test executable and installer
         shell: pwsh
         run: ./desktop/windows/build.ps1 -PythonExe (Get-Command python).Source
