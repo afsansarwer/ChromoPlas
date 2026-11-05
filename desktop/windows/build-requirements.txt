@@ -1,0 +1,3 @@
+# Packaging tools only. The desktop GUI itself uses Python's standard library.
+pyinstaller==6.22.3
+pytest==8.4.2

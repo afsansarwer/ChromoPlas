@@ -88,6 +88,7 @@ Results include per-sample `06_localization/<sample>/architecture.svg`, `gene_lo
 
 ## Detailed guides
 
+- **[Windows desktop preview: GUI, automatic engine setup and EXE build guide](docs/windows-desktop.md)** — source/build workflow; real Windows/WSL validation required before public release.
 - **[Installation and troubleshooting](INSTALL.md)**, including a manual Conda setup.
 - **[Debian/Ubuntu and WSL2 installation](docs/install-debian.md)** and [Windows/WSL2 setup](docs/install-windows-powershell.md).
 - [Omarchy/Arch setup](docs/install-omarchy.md) · [macOS (experimental)](docs/install-macos.md).
