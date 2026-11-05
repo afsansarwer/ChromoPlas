@@ -34,9 +34,14 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Could not prepare the bundled analysis source.' }
     & $buildPython -m pytest -q tests/test_desktop.py
     if ($LASTEXITCODE -ne 0) { throw 'Desktop tests failed; no installer was produced.' }
+    $assetsDirectory = Join-Path $repoRoot 'desktop\assets'
+    $launcherScript = Join-Path $repoRoot 'desktop\launcher.py'
+    $distributionDirectory = Join-Path $repoRoot 'dist\desktop'
+    $workDirectory = Join-Path $repoRoot 'build\desktop'
+    $specDirectory = Join-Path $repoRoot 'build'
     & $buildPython -m PyInstaller --noconfirm --clean --onefile --windowed --noupx `
-        --name ChromoPlas --paths . --add-data 'desktop/assets;desktop/assets' `
-        --distpath dist/desktop --workpath build/desktop --specpath build desktop/launcher.py
+        --name ChromoPlas --paths $repoRoot --add-data "$assetsDirectory;desktop/assets" `
+        --distpath $distributionDirectory --workpath $workDirectory --specpath $specDirectory $launcherScript
     if ($LASTEXITCODE -ne 0) { throw 'PyInstaller failed.' }
     $application = Join-Path $repoRoot 'dist\desktop\ChromoPlas.exe'
     $smoke = Start-Process -FilePath $application -ArgumentList '--smoke-test' -Wait -PassThru
