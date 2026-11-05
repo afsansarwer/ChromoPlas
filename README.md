@@ -95,3 +95,7 @@ Results include per-sample `06_localization/<sample>/architecture.svg`, `gene_lo
 - [Scientific validation and limitations](docs/validation.md) · [Contributing](CONTRIBUTING.md) · [Citations](CITATION.md) · [MIT License](LICENSE).
 
 **Release:** v0.3.0 public beta / research prototype. Successful real-genome execution has been demonstrated on Omarchy Linux, but independent plasmid-location benchmarking and full cross-platform validation are still pending. Gene and contig locations are computational predictions, not experimental or clinical confirmation.
+
+### Development and acknowledgements
+
+ChromoPlas was developed and is maintained by Afsan Sarwer, with assistance from ChatGPT (OpenAI) for code suggestions, debugging, and documentation. The project maintainer is responsible for reviewing, testing, and maintaining the released workflow.
