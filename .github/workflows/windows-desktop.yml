@@ -4,13 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches: ['desktop/**']
-  pull_request:
-    paths:
-      - 'desktop/**'
-      - 'src/**'
-      - 'tests/test_desktop.py'
-      - 'docs/windows-desktop.md'
-      - '.github/workflows/windows-desktop.yml'
 
 permissions:
   contents: read
@@ -37,7 +30,7 @@ jobs:
             choco install innosetup --yes --no-progress --version=6.7.1
             if ($LASTEXITCODE -ne 0) { throw 'Could not install Inno Setup' }
           }
-          & $compiler /?
+          Write-Host ('Inno Setup compiler: ' + (Get-Item $compiler).VersionInfo.FileVersion)
       - name: Build and smoke-test executable and installer
         shell: pwsh
         run: ./desktop/windows/build.ps1 -PythonExe (Get-Command python).Source

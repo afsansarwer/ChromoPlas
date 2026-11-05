@@ -48,8 +48,9 @@ build on an actual Windows runner, so the maintainer does not need a Windows
 build environment locally.
 
 1. Put this desktop implementation on a branch named `desktop/windows-installer`.
-   A push to any `desktop/**` branch triggers the build. A pull request that
-   changes the desktop files also triggers it.
+   A push to any `desktop/**` branch triggers the build, including updates to an
+   open pull request from that branch. This avoids duplicate Windows builds for
+   both the push and pull-request events.
 2. Open the repository's **Actions** tab and select **Build Windows desktop installer**.
 3. Open the run for your branch and wait for all steps to pass.
 4. In **Artifacts**, download **ChromoPlas-Windows-x64-preview**. GitHub requires
