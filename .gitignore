@@ -8,3 +8,7 @@ dist/
 .venv/
 results/
 .snakemake/
+desktop/assets/
+.venv-desktop-build/
+build/
+dist/
